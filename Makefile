@@ -1,4 +1,3 @@
-
 build/lexer.h: build/lang.l
 	cd build && flex lang.l
 
