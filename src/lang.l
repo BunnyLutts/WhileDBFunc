@@ -56,6 +56,14 @@
     return TM_WC;
 }
 
+"return" {
+    return TM_RETURN;
+}
+
+"func" {
+    return TM_FUNC;
+}
+
 [_A-Za-z][_A-Za-z0-9]* {
     yylval.i = new_str(yytext, yyleng);
     return TM_IDENT;
@@ -139,6 +147,10 @@
 
 "!" {
     return TM_NOT;
+    }
+
+"," {
+    return TM_COMMA;
     }
 
 [ \t\n\r]    { };

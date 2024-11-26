@@ -13,6 +13,7 @@ unsigned int n;
 char * i;
 struct expr * e;
 struct cmd * c;
+struct list * l;
 void * none;
 }
 
@@ -23,7 +24,7 @@ void * none;
 %token <none> TM_LEFT_PAREN TM_RIGHT_PAREN
 %token <none> TM_SEMICOL
 %token <none> TM_MALLOC TM_RI TM_RC TM_WI TM_WC
-%token <none> TM_VAR TM_IF TM_THEN TM_ELSE TM_WHILE TM_DO
+%token <none> TM_VAR TM_IF TM_THEN TM_ELSE TM_WHILE TM_DO TM_RETURN TM_FUNC
 %token <none> TM_ASGNOP
 %token <none> TM_OR
 %token <none> TM_AND
@@ -37,6 +38,7 @@ void * none;
 %type <c> NT_CMD
 %type <e> NT_EXPR_2
 %type <e> NT_EXPR
+%type <l> NT_LIST
 
 // Priority
 %nonassoc TM_ASGNOP
@@ -47,7 +49,7 @@ void * none;
 %left TM_MUL TM_DIV TM_MOD
 %left TM_NOT
 %left TM_LEFT_PAREN TM_RIGHT_PAREN
-%right TM_SEMICOL
+%right TM_SEMICOL TM_COMMA
 
 %%
 
@@ -88,6 +90,22 @@ NT_CMD:
   {
     $$ = (TWriteChar($3));
   }
+| TM_FUNC TM_IDENT TM_LEFT_PAREN NT_LIST TM_RIGHT_PAREN TM_LEFT_BRACE NT_CMD TM_RIGHT_BRACE
+  {
+    $$ = (TFDecl($2, $4, $7));
+  }
+| TM_IDENT TM_LEFT_PAREN NT_LIST TM_RIGHT_PAREN
+  {
+    $$ = (TFCallC($1, $3));
+  }
+| TM_RETURN NT_EXPR
+  {
+    $$ = (TRetVal($2));
+  }
+| TM_RETURN
+  {
+    $$ = (TRet());
+  }
 ;
 
 
@@ -127,6 +145,10 @@ NT_EXPR_2:
 | TM_MUL NT_EXPR_2
   {
     $$ = (TDeref($2));
+  }
+| TM_IDENT TM_LEFT_PAREN NT_LIST TM_RIGHT_PAREN
+  {
+    $$ = (TFCallE($1, $3));
   }
 ;
 
@@ -189,6 +211,20 @@ NT_EXPR:
   }
 ;
 
+NT_LIST:
+  %empty
+  {
+    $$ = (TNil());
+  }
+| NT_EXPR
+  {
+    $$ = (TParams($1, TNil()));
+  }
+| NT_EXPR TM_COMMA NT_LIST
+  {
+    $$ = (TParams($1, $3));
+  }
+;
 
 %%
 
