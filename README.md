@@ -17,3 +17,8 @@ git add ${Something}
 git commit -m "${Message}"
 git push
 ```
+If you need to use 'auto_test.nu' to run auto tests, please install 'nushell'[https://www.nushell.sh/zh-CN/book/installation.html]. After install, you can run:
+
+```bash
+nu auto_test.nu
+```
