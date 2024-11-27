@@ -31,6 +31,9 @@ clean:
 	rm -rf build/*
 	rm -rf test.result
 
+test:
+	nu auto_test.nu
+	
 %.c: %.y
 
 %.c: %.l
