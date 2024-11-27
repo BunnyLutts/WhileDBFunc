@@ -1,0 +1,13 @@
+var fibb_1;
+var fibb_2;
+fibb_1 = 1;
+fibb_2 = 1;
+var n;
+n = 32;
+while n != 0 do {
+  var tmp;
+  tmp = fibb_2;
+  fibb_2 = fibb_1 + fibb_2;
+  fibb_1 = tmp
+};
+write_int(fibb_2)
