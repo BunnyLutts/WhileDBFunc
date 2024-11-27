@@ -21,6 +21,15 @@ struct cmd * new_cmd_ptr() {
   return res;
 }
 
+struct list * new_list_ptr() {
+  struct list * res = (struct list *) malloc(sizeof(struct list));
+  if (res == NULL) {
+    printf("Failure in malloc.\n");
+    exit(0);
+  }
+  return res;
+}
+
 struct expr * TConst(unsigned int value) {
   struct expr * res = new_expr_ptr();
   res -> t = T_CONST;
@@ -78,6 +87,14 @@ struct expr * TReadChar() {
   return res;
 }
 
+struct expr * TFCallE(char * fname, struct list * params) {
+  struct expr * res = new_expr_ptr();
+  res -> t = T_FCALLE;
+  res -> d.FCALLE.fname = fname;
+  res -> d.FCALLE.params = params;
+  return res;
+}
+
 struct cmd * TDecl(char * name) {
   struct cmd * res = new_cmd_ptr();
   res -> t = T_DECL;
@@ -131,6 +148,51 @@ struct cmd * TWriteChar(struct expr * arg) {
   res -> d.WC.arg = arg;
   return res;
 }
+
+struct cmd * TFDecl(char * fname, struct list * params, struct cmd * body) {
+  struct cmd * res = new_cmd_ptr();
+  res -> t = T_FDECL;
+  res -> d.FDECL.fname = fname;
+  res -> d.FDECL.params = params;
+  res -> d.FDECL.body = body;
+  return res;
+}
+
+struct cmd * TFCallC(char * fname, struct list * params) {
+  struct cmd * res = new_cmd_ptr();
+  res -> t = T_FCALLC;
+  res -> d.FCALLC.fname = fname;
+  res -> d.FCALLC.params = params;
+  return res;
+}
+
+struct cmd * TRet() {
+  struct cmd * res = new_cmd_ptr();
+  res -> t = T_RET;
+  return res;
+}
+
+struct cmd * TRetVal(struct expr * val) {
+  struct cmd * res = new_cmd_ptr();
+  res -> t = T_RETVAL;
+  res -> d.RETVAL.val = val;
+  return res;
+}
+
+struct list * TParams(struct expr * head, struct list * tails) {
+  struct list * res = new_list_ptr();
+  res -> t = T_PARAMS;
+  res -> d.PARAMS.head = head;
+  res -> d.PARAMS.tails = tails;
+  return res;
+}
+
+struct list * TNil() {
+  struct list * res = new_list_ptr();
+  res -> t = T_NIL;
+  return res;
+}
+
 
 void print_binop(enum BinOpType op) {
   switch (op) {
@@ -225,6 +287,11 @@ void print_expr(struct expr * e) {
   case T_RC:
     printf("READ_CHAR()");
     break;
+  case T_FCALLE:
+    printf("FCALLE(%s, [", e -> d.FCALLE.fname);
+    print_list(e -> d.FCALLE.params);
+    printf("])");
+    break;
   }
 }
 
@@ -273,6 +340,36 @@ void print_cmd(struct cmd * c) {
     print_expr(c -> d.WC.arg);
     printf(")");
     break;
+  case T_FDECL:
+    printf("DECL(%s, [", c -> d.FDECL.fname);
+    print_list(c -> d.FDECL.params);
+    printf("], ");
+    print_cmd(c -> d.FDECL.body);
+    printf(")");
+  case T_FCALLC:
+    printf("FCALLC(%s, [", c -> d.FCALLC.fname);
+    print_list(c -> d.FCALLC.params);
+    printf("])");
+    break;
+  case T_RET:
+    printf("RETURN()");
+    break;
+  case T_RETVAL:
+    printf("RETURN(");
+    print_expr(c -> d.RETVAL.val);
+    printf(")");
+    break;
+  }
+}
+
+void print_list(struct list * l) {
+  switch (l -> t) {
+  case T_NIL:
+    break;
+  case T_PARAMS:
+    print_expr(l -> d.PARAMS.head);
+    printf(", ");
+    print_list(l -> d.PARAMS.tails);
   }
 }
 

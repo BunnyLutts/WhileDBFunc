@@ -29,6 +29,7 @@ all: bin/main
 
 clean:
 	rm -rf build/*
+	rm -rf test.result
 
 %.c: %.y
 

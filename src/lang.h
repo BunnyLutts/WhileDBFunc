@@ -33,7 +33,8 @@ enum ExprType {
   T_DEREF,
   T_MALLOC,
   T_RI,
-  T_RC
+  T_RC,
+  T_FCALLE // Function Call as Expr
 };
 
 enum CmdType {
@@ -43,7 +44,16 @@ enum CmdType {
   T_IF,
   T_WHILE,
   T_WI,
-  T_WC
+  T_WC,
+  T_FDECL,  // Function Decl
+  T_FCALLC, // Function Call as Cmd
+  T_RET,    // Return
+  T_RETVAL, // Return with Value
+};
+
+enum ListType {
+  T_PARAMS, // Params
+  T_NIL, // Nothing
 };
 
 struct expr {
@@ -57,6 +67,7 @@ struct expr {
     struct {struct expr * arg; } MALLOC;
     struct {void * none; } RI;
     struct {void * none; } RC;
+    struct {char * fname; struct list * params;} FCALLE; // Function Call as Expr
   } d;
 };
 
@@ -70,6 +81,18 @@ struct cmd {
     struct {struct expr * cond; struct cmd * body; } WHILE;
     struct {struct expr * arg; } WI;
     struct {struct expr * arg; } WC;
+    struct {char * fname; struct list * params; struct cmd * body; } FDECL; // Function Decl
+    struct {char * fname; struct list * params; } FCALLC; // Function Call as Cmd
+    struct {} RET; // Return
+    struct {struct expr * val; } RETVAL; // Return
+  } d;
+};
+
+struct list {
+  enum ListType t;
+  union {
+    struct {struct expr * head; struct list * tails;} PARAMS;
+    struct {} NIL;
   } d;
 };
 
@@ -81,6 +104,7 @@ struct expr * TDeref(struct expr * arg);
 struct expr * TMalloc(struct expr * arg);
 struct expr * TReadInt();
 struct expr * TReadChar();
+struct expr * TFCallE(char * fname, struct list * params); // Function Call as Expr
 struct cmd * TDecl(char * name);
 struct cmd * TAsgn(struct expr * left, struct expr * right);
 struct cmd * TSeq(struct cmd * left, struct cmd * right);
@@ -88,11 +112,18 @@ struct cmd * TIf(struct expr * cond, struct cmd * left, struct cmd * right);
 struct cmd * TWhile(struct expr * cond, struct cmd * body);
 struct cmd * TWriteInt(struct expr * arg);
 struct cmd * TWriteChar(struct expr * arg);
+struct cmd * TFDecl(char * fname, struct list * params, struct cmd * body); // Function Decl
+struct cmd * TFCallC(char * fname, struct list * params); // Function Call as Cmd
+struct cmd * TRet(); // Return
+struct cmd * TRetVal(struct expr * val); // Return with Value
+struct list * TParams(struct expr * head, struct list * tails);
+struct list * TNil();
 
 void print_binop(enum BinOpType op);
 void print_unop(enum UnOpType op);
 void print_expr(struct expr * e);
 void print_cmd(struct cmd * c);
+void print_list(struct list * l);
 
 unsigned int build_nat(char * c, int len);
 char * new_str(char * str, int len);
