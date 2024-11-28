@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Install dependencies
-      run: apt install gcc nushell
+      run: sudo apt-get install gcc nushell
     - name: Make
       run: make clean && make
     - name: Test
