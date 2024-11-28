@@ -15,6 +15,6 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get install pkg-config libssl-dev build-essential && npm install -g nushell
     - name: Make
-      run: make clean && make
+      run: mkdir build && make clean && make
     - name: Test
       run: nu auto_test.nu
