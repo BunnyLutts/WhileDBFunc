@@ -2,6 +2,9 @@
 #define UTILITY_H_INCLUDED
 
 #include "lang.h"
+#include "stdlib.h"
+
+#define NEW(type) (type *) malloc(sizeof(type))
 
 // This is the head file of interpreter
 // In this file, we define the components of the interpreter
@@ -37,41 +40,76 @@
 // 3. Pointers are stack pointers.
 // 4. Thanks to the resurrsive structure of AST, we can use a single pointer of the AST as PC
 
-// Something like Option<int64> in Rust.
-// Used for binding and empty Binding.
-// Since we cannot get a empty binding for function, 
-// this option is used only for int and ptr.
-typedef size_t* Option;
+typedef size_t Primitive;
 
-#define Null() = (NULL)
-#define IsNull(o) = (o == Null())
-#define UnWrap(o) = (IsNull(o) ? exit(0) : *o)
+#define Null() (NULL)
+#define IsNull(o) (o == Null())
+#define UnWrap(o) (IsNull(o) ? exit(0) : *o)
 
 // Closure type
-struct Closure {
+typedef struct closure_prototype {
   struct list *params;
   struct cmd *body;
-};
+} Closure;
 
-// We have two types of binding
-enum DataType {
-  D_OPTION, D_CLOSURE
-};
+// We have three types of binding
+typedef enum data_type_prototype {
+  D_PRIMITIVE, D_CLOSURE, D_EMPTY
+} DataType;
 
 // Data type, has two categories
-struct Data {
-  enum DataType type;
+typedef struct data_prototype {
+  DataType type;
   union {
-    Option prime;
-    struct Closure closure;
-  } data;
-};
+    Primitive *primitive;
+    Closure *closure;
+  } *data;
+} Data;
 
 // Binding type
 // Note: "var sig" is assigned a null prime binding
-struct Binding {
+typedef struct Bbinding_prototype {
   char *sig;
-  struct Data *data;
-};
+  Data *data;
+} Binding;
+
+Binding *new_binding(char *sig, Data *data) {
+  Binding *res = NEW(Binding);
+  res->sig = sig;
+  res->data = data;
+  return res;
+}
+
+Data *new_primitive_data(Primitive val) {
+  Data *res = NEW(Data);
+  res->type = D_PRIMITIVE;
+  res->data->primitive = NEW(Primitive);
+  *res->data->primitive = val;
+  return res;
+}
+
+Data *new_closure_data(struct list *params, struct cmd *body) {
+  Data *res = NEW(Data);
+  res->type = D_CLOSURE;
+  res->data->closure = NEW(Closure);
+  res->data->closure->params = params;
+  res->data->closure->body = body;
+  return res;
+}
+
+Binding *new_empty_binding(char *sig) {
+  Data *data = NEW(Data);
+  data->type = D_EMPTY;
+  data->data = NULL;
+  return new_binding(sig, data);
+}
+
+Binding *new_primitive_binding(char *sig, Primitive val) {
+  return new_binding(sig, new_primitive_data(val));
+}
+
+Binding *new_closure_binding(char *sig, struct list *params, struct cmd *body) {
+  return new_binding(sig, new_closure_data(params, body));
+}
 
 #endif
