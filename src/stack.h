@@ -6,17 +6,17 @@
 #include "string.h"
 
 struct Node {
-  struct Node *last = NULL;
-  struct Node *next = NULL;
-  Binding *binding = NULL;
+  struct Node *last;
+  struct Node *next;
+  Binding *binding;
 };
 
 typedef struct stack_prototype {
-  struct Node* top = NULL;
+  struct Node* top;
 } Stack;
 
 struct Node *new_node(struct Node *last, struct Node *next, Binding *binding) {
-  struct Node *res = (struct Node *) malloc(sizeof(Node));
+  struct Node *res = (struct Node *) malloc(sizeof(struct Node));
   res->last = last;
   res->next = next;
   res->binding = binding;
