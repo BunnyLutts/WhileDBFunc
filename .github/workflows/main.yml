@@ -1,0 +1,19 @@
+on:
+  push:
+    branches:
+    - main
+    - dev_mooooonkrui
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Auto test using nu
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install dependencies
+      run: apt install gcc nushell
+    - name: Make
+      run: make clean && make
+    - name: Test
+      run: nu auto_test.nu
