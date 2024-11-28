@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v4
     - name: Install dependencies
-      run: sudo apt-get install gcc nushell
+      run: sudo apt-get install pkg-config libssl-dev build-essential && cargo install nu --locked
     - name: Make
       run: make clean && make
     - name: Test
