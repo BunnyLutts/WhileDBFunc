@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
-      run: sudo apt-get install pkg-config libssl-dev build-essential && cargo install nu --locked
+      run: sudo apt-get install pkg-config libssl-dev build-essential && npm install -g nushell
     - name: Make
       run: make clean && make
     - name: Test
