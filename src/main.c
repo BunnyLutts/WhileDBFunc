@@ -2,6 +2,7 @@
 #include "lang.h"
 #include "lexer.h"
 #include "parser.h"
+#include "interpreter.h"
 
 extern struct cmd * root;
 int yyparse();
