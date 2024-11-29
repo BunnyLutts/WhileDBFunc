@@ -5,6 +5,9 @@
 #include "stack.h"
 #include <stdio.h>
 
+// Use this macro to control whether to run the interpreter or not
+// #define INTERPRETER_FINISHED
+
 // This is the head file of interpreter
 // In this file, we define the components of the interpreter
 
@@ -63,7 +66,7 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter);
 // pop bindings after exec
 Primitive *call(Stack *stack, Closure *closure, struct list *params);
 
-// eval expression
+// eval expression, a hard work, I know
 Primitive *eval(Stack *stack, struct expr* expr);
 
 // a wrap of exec
