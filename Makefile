@@ -38,7 +38,10 @@ test:
 
 %.c: %.l
 
-build/% : src/%
+build/ :
+	mkdir build
+
+build/% : src/% build/
 	cp src/* build
 
 .DEFAULT_GOAL := all
