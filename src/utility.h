@@ -40,7 +40,7 @@
 // 3. Pointers are stack pointers.
 // 4. Thanks to the resurrsive structure of AST, we can use a single pointer of the AST as PC
 
-typedef size_t Primitive;
+typedef signed long long Primitive;
 
 #define Null() (NULL)
 #define IsNull(o) (o == Null())
