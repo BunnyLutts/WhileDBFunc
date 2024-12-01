@@ -42,6 +42,9 @@ clean:
 
 test:
 	nu auto_test.nu
+
+depend:
+	npm install -g nushell
 	
 %.c: %.y
 
