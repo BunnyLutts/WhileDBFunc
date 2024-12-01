@@ -19,11 +19,20 @@ build/parser.o: build/parser.c build/parser.h build/lexer.h build/lang.h
 build/lexer.o: build/lexer.c build/lexer.h build/parser.h build/lang.h
 	gcc -c build/lexer.c -o build/lexer.o
 
+build/stack.o: build/stack.c build/stack.h
+	gcc -c build/stack.c -o build/stack.o
+
+build/utility.o: build/utility.c build/utility.h
+	gcc -c build/utility.c -o build/utility.o
+
+build/interpreter.o: build/interpreter.h build/stack.h build/utility.h build/lang.h
+	gcc -c build/interpreter.c -o build/interpreter.o
+
 build/main.o: build/main.c build/lexer.h build/parser.h build/lang.h
 	gcc -c build/main.c -o build/main.o
 
-bin/main: build/lang.o build/parser.o build/lexer.o build/main.o
-	gcc build/lang.o build/parser.o build/lexer.o build/main.o -o bin/main
+bin/main: build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o
+	gcc build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o -o bin/main
 
 all: bin/main
 
@@ -41,7 +50,10 @@ depend:
 
 %.c: %.l
 
-build/% : src/%
+build/ :
+	mkdir build
+
+build/% : src/% build/
 	cp src/* build
 
 .DEFAULT_GOAL := all
