@@ -5,6 +5,8 @@
 #include "stdlib.h"
 
 #define NEW(type) (type *) malloc(sizeof(type))
+#define MALLOC(E) ;
+#define DEREF(p) ;
 
 
 typedef signed long long Primitive;
@@ -35,7 +37,7 @@ typedef struct data_prototype {
 
 // Binding type
 // Note: "var sig" is assigned a null prime binding
-typedef struct Bbinding_prototype {
+typedef struct binding_prototype {
   char *sig;
   Data *data;
 } Binding;
@@ -51,5 +53,4 @@ Binding *new_empty_binding(char *sig);
 Binding *new_primitive_binding(char *sig, Primitive val);
 
 Binding *new_closure_binding(char *sig, struct list *params, struct cmd *body);
-
 #endif
