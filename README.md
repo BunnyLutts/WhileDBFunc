@@ -2,7 +2,7 @@
 
 A repo for group assignment of PL. An Implementation of While Lang with Deference, Built-in functions and ordinary Functions.
 
-## How to contribute(For team members)
+## How to contribute (For team members)
 
 ``` bash
 git clone git@github.com:BunnyLutts/WhileDBFunc.git
@@ -17,13 +17,19 @@ git add ${Something}
 git commit -m "${Message}"
 git push
 ```
-If you need to use `auto_test.nu` to run auto tests, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). After install, you can run:
+## How to test
+
+If you need to use `auto_test.nu` to run auto tests, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). 
+If you use `npm`, you can simply run `make depend` to install nushell. 
+After install, you can run:
 
 ```bash
-nu auto_test.nu
+make test
 ```
 
-## Langugage Specification
+You will get a csv like `test_result` file and a table terminal output.
+
+## Language Specification
 
 This language spec is only used for explain syntax, not absolutely applied in implement. The syntax rules are written in regex way.
 

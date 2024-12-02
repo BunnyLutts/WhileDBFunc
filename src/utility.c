@@ -38,3 +38,14 @@ Binding *new_primitive_binding(char *sig, Primitive val) {
 Binding *new_closure_binding(char *sig, struct list *params, struct cmd *body) {
   return new_binding(sig, new_closure_data(params, body));
 }
+
+Binding *search(Stack *stack, DataType type, char *sig) {
+  struct Node *ptr = stack->top;
+  while(ptr) {
+    if(((Binding *)ptr->ptr)->data->type == type && strcmp(((Binding *)ptr->ptr)->sig, sig)) {
+      return ptr->ptr;
+    }
+    ptr = ptr->last;
+  }
+  return NULL;
+}

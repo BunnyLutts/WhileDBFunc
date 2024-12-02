@@ -2,11 +2,10 @@
 #define INTER_H_INCLUDED
 
 #include "utility.h"
-#include "stack.h"
 #include <stdio.h>
 
 // Use this macro to control whether to run the interpreter or not
-// #define INTERPRETER_FINISHED
+// #define INTERPRETER_ENABLED
 
 // This is the head file of interpreter
 // In this file, we define the components of the interpreter
@@ -42,10 +41,8 @@
 // Some points:
 // 1. To simplify code, I recommand interpret "program" as a "main" function
 // 2. Function calls in expression and command should be treated seperatedly.
-// 3. Pointers are stack pointers.
-// 4. Thanks to the resurrsive structure of AST, we can use a single pointer of the AST as PC
-// 5. When deref a pointer, deref it to the address of Binding
-// 6. Use `0` and `1` to represent bool value
+// 3. Thanks to the resurrsive structure of AST, we can use a single pointer of the AST as PC
+// 4. Use `0` and `1` to represent bool value
 
 // init empty stack
 Stack *init();
