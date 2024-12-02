@@ -1,25 +1,26 @@
 #include "stack.h"
 
-struct Node *new_node(struct Node *last, struct Node *next, Binding *binding) {
+struct Node *new_node(struct Node *last, struct Node *next, void *ptr) {
   struct Node *res = (struct Node *) malloc(sizeof(struct Node));
   res->last = last;
   res->next = next;
-  res->binding = binding;
+  res->ptr = ptr;
   return res;
 }
 
-void push(Stack *stack, Binding *binding) {
+void *push(Stack *stack, void *ptr) {
   if(stack) {
-    stack->top->next = new_node(stack->top, NULL, binding);
+    stack->top->next = new_node(stack->top, NULL, ptr);
     stack->top = stack->top->next;
   } else {
-    stack->top = new_node(NULL, NULL, binding);
+    stack->top = new_node(NULL, NULL, ptr);
   }
+  return ptr;
 }
 
-Binding *pop(Stack *stack) {
+void *pop(Stack *stack) {
   if(stack) {
-    Binding *res = stack->top->binding;
+    void *res = stack->top->ptr;
     struct Node *old_top = stack->top;
     stack->top = old_top->last;
     free(old_top);
@@ -29,13 +30,13 @@ Binding *pop(Stack *stack) {
   }
 }
 
-Binding *search(Stack *stack, DataType type, char *sig) {
+void purge(Stack *stack) {
   struct Node *ptr = stack->top;
-  while(ptr) {
-    if(ptr->binding->data->type == type && strcmp(ptr->binding->sig, sig)) {
-      return ptr->binding;
-    }
+  while (ptr) {
+    free(ptr->ptr);
+    struct Node *tmp = ptr;
     ptr = ptr->last;
+    free(tmp);
   }
-  return NULL;
+  free(stack);
 }
