@@ -16,6 +16,23 @@ Stack * init() {
     return p;
 }
 
+void fault(const char *msg) {
+    fprintf(stderr, "Program fault: %s\n", msg);
+    exit(-1);
+}
+
+void push_args(Stack *stack, Closure *closure, struct list *args, size_t *counter) {
+    struct list *params = closure->params;
+    Stack *prev_stack = stack;
+    for (; params && params->t != T_NIL && args && args->t != T_NIL; params = params->d.PARAMS.tails, args = args->d.PARAMS.tails) {
+        push(stack, new_primitive_binding(params->d.PARAMS.head->d.VAR.name, *eval(prev_stack, args->d.PARAMS.head)));
+        *counter++;
+    }
+    if ((params && params->t!= T_NIL) ^ (args && args->t!= T_NIL)) {
+        fault("Wrong number of arguments.");
+    }
+}
+
 Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
     switch (body->t) {
         case T_DECL: {
@@ -56,13 +73,24 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
 }
 
 Primitive *exec_decl(Stack *stack, union CmdContent *body, size_t *counter) {
-    push(stack, new_empty_binding(body->DECL.name));
+    push(stack, new_primitive_binding(body->DECL.name, 0));
+    // push(stack, new_empty_binding(body->DECL.name));
     *counter += 1;
     return NULL;
 }
 
 Primitive *exec_asgn(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement asgn evaluation
+    Primitive *left = eval(stack, body->ASGN.left);
+    Primitive *right = eval(stack, body->ASGN.right);
+    if (left) {
+        if (right) {
+            *left = *right;
+        } else {
+            fault("Illegal right expression!");
+        }
+    } else {
+        fault("Undefined left-expr!");
+    }
     return NULL;
 }
 
@@ -83,7 +111,6 @@ Primitive *exec_if(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement while evaluation
     size_t new_counter;
     while (eval(stack, body->WHILE.cond)) {
         new_counter = 0;
@@ -104,12 +131,21 @@ Primitive *exec_wc(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_fdecl(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement fdecl evaluation
+    push(stack, new_closure_binding(body->FDECL.fname, body->FDECL.params, body->FDECL.body));
     return NULL;
 }
 
 Primitive *exec_fcallc(Stack *stack, union CmdContent *body, size_t *counter) {
     // TODO: Implement fcallc evaluation
+    size_t new_counter = 0;
+    Binding *func_b = search(stack, D_CLOSURE, body->FCALLC.fname);
+    if (!func_b) {
+        fault("Undefined function!");
+    }
+    Closure *func = func_b->data->data->closure;
+    push_args(stack, func, body->FCALLC.params, &new_counter);
+    exec(stack, func->body, &new_counter);
+    popn(stack, new_counter);
     return NULL;
 }
 
