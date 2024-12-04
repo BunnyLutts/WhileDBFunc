@@ -69,6 +69,15 @@ Primitive *eval(Stack *stack, struct expr* expr);
 // a wrap of exec
 void exec_prog(struct cmd *prog);
 
+// showing error message and exit
+void fault(const char * msg);
+
+// check p is not null
+void checkp(void *p);
+
+// push arguments for function call
+void push_args(Stack *stack, Closure *closure, struct list *params, size_t *counter);
+
 Primitive *exec_decl(Stack *stack, union CmdContent *body, size_t *counter);
 Primitive *exec_asgn(Stack *stack, union CmdContent *body, size_t *counter);
 Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter);

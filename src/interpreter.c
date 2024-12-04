@@ -21,6 +21,12 @@ void fault(const char *msg) {
     exit(-1);
 }
 
+void checkp(void *p) {
+    if (IsNull(p)) {
+        fault("Illegal expression!");
+    }
+}
+
 void push_args(Stack *stack, Closure *closure, struct list *args, size_t *counter) {
     struct list *params = closure->params;
     Stack *prev_stack = stack;
@@ -96,28 +102,40 @@ Primitive *exec_asgn(Stack *stack, union CmdContent *body, size_t *counter) {
 
 Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
     // TODO: Implement seq evaluation
-    return NULL;
+    // Check if exec returns a non-null pointer, if so, return it.
+    Primitive *ret = NULL;
+    if (ret = exec(stack, body->SEQ.left, counter)) {
+        return ret;
+    } else {
+        ret = exec(stack, body->SEQ.right, counter);
+    }
+    return ret;
 }
 
 Primitive *exec_if(Stack *stack, union CmdContent *body, size_t *counter) {
+    Primitive *ret = NULL;
     size_t new_counter = 0;
     if (eval(stack, body->IF.cond)) {
-        exec(stack, body->IF.left, &new_counter);
+        ret = exec(stack, body->IF.left, &new_counter);
     } else {
-        exec(stack, body->IF.right, &new_counter);
+        ret = exec(stack, body->IF.right, &new_counter);
     }
     popn(stack, new_counter);
-    return NULL;
+    return ret;
 }
 
 Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
+    Primitive *ret = NULL;
     size_t new_counter;
     while (eval(stack, body->WHILE.cond)) {
         new_counter = 0;
-        exec(stack, body->WHILE.body, &new_counter);
+        ret = exec(stack, body->WHILE.body, &new_counter);
         popn(stack, new_counter);
+        if (ret) {
+            return ret;
+        }
     }
-    return NULL;
+    return ret;
 }
 
 Primitive *exec_wi(Stack *stack, union CmdContent *body, size_t *counter) {
@@ -136,7 +154,6 @@ Primitive *exec_fdecl(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_fcallc(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement fcallc evaluation
     size_t new_counter = 0;
     Binding *func_b = search(stack, D_CLOSURE, body->FCALLC.fname);
     if (!func_b) {
@@ -150,43 +167,53 @@ Primitive *exec_fcallc(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_ret(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement ret evaluation
-    return NULL;
+    Primitive *p = NEW(Primitive);
+    *p = 0;
+    return p;
 }
 
 Primitive *exec_retval(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement retval evaluation
-    return NULL;
+    return eval(stack, body->RETVAL.val);
 }
 
 Primitive *eval(Stack *stack, struct expr* expr) {
+    Primitive *ret = NULL;
     switch (expr->t) {
         case T_CONST: {
-            return eval_const(stack, &expr->d);
+            ret = eval_const(stack, &expr->d);
+            break;
         }
         case T_VAR: {
-            return eval_var(stack, &expr->d);
+            ret = eval_var(stack, &expr->d);
+            break;
         }
         case T_BINOP: {
-            return eval_binop(stack, &expr->d);
+            ret = eval_binop(stack, &expr->d);
+            break;
         }
         case T_UNOP: {
-            return eval_unop(stack, &expr->d);
+            ret = eval_unop(stack, &expr->d);
+            break;
         }
         case T_MALLOC: {
-            return eval_malloc(stack, &expr->d);
+            ret = eval_malloc(stack, &expr->d);
+            break;
         }
         case T_RI: {
-            return eval_ri(stack, &expr->d);
+            ret = eval_ri(stack, &expr->d);
+            break;
         }
         case T_RC: {
-            return eval_rc(stack, &expr->d);
+            ret = eval_rc(stack, &expr->d);
+            break;
         }
         case T_FCALLE: {
-            return eval_fcalle(stack, &expr->d);
+            ret = eval_fcalle(stack, &expr->d);
+            break;
         }
     }
-    return NULL;
+    checkp(ret);
+    return ret;
 }
 
 Primitive *eval_const(Stack *stack, union ExprContent *expr) {
@@ -210,13 +237,12 @@ Primitive *eval_unop(Stack *stack, union ExprContent *expr) {
 }
 
 Primitive *eval_deref(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement dereference evaluation
-    return NULL;
+    return DEREF(*eval(stack, expr->DEREF.arg));
 }
 
 Primitive *eval_malloc(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement malloc evaluation
-    return NULL;
+    Primitive *val = eval(stack, expr->MALLOC.arg);
+    return MALLOC(sizeof(Primitive) * *val);
 }
 
 Primitive *eval_ri(Stack *stack, union ExprContent *expr) {
@@ -230,8 +256,17 @@ Primitive *eval_rc(Stack *stack, union ExprContent *expr) {
 }
 
 Primitive *eval_fcalle(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement fcalle evaluation
-    return NULL;
+    Primitive *ret = NULL;
+    size_t new_counter = 0;
+    Binding *func_b = search(stack, D_CLOSURE, expr->FCALLE.fname);
+    if (!func_b) {
+        fault("Undefined function!");
+    }
+    Closure *func = func_b->data->data->closure;
+    push_args(stack, func, expr->FCALLE.params, &new_counter);
+    ret = exec(stack, func->body, &new_counter);
+    popn(stack, new_counter);
+    return ret;
 }
 
 void exec_prog(struct cmd *prog) {
