@@ -18,19 +18,19 @@ Stack * init() {
 
 Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
     switch (body->t) {
-        case T_DECL: { // var x
+        case T_DECL: {
             return exec_decl(stack, &body->d, counter);
         }
-        case T_ASGN: { // x = 1
+        case T_ASGN: {
             return exec_asgn(stack, &body->d, counter);
         }
-        case T_SEQ: { // S ; S
+        case T_SEQ: {
             return exec_seq(stack, &body->d, counter);
         }
-        case T_IF: { // if (1) {S} else {S}
+        case T_IF: {
             return exec_if(stack, &body->d, counter);
         }
-        case T_WHILE: { // while (1) {S}
+        case T_WHILE: {
             return exec_while(stack, &body->d, counter);
         }
         case T_WI: { 
@@ -56,7 +56,9 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
 }
 
 Primitive *exec_decl(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement decl evaluation
+    char *name = body->DECL.name;
+    push(stack, new_empty_binding(name));
+    *counter += 1;
     return NULL;
 }
 
