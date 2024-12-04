@@ -69,4 +69,26 @@ Primitive *eval(Stack *stack, struct expr* expr);
 // a wrap of exec
 void exec_prog(struct cmd *prog);
 
+Primitive *exec_decl(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_asgn(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_if(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_wi(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_wc(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_fdecl(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_fcallc(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_ret(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_retval(Stack *stack, union CmdContent *body, size_t *counter);
+
+Primitive *eval_const(Stack *stack, union ExprContent *expr);
+Primitive *eval_var(Stack *stack, union ExprContent *expr);
+Primitive *eval_binop(Stack *stack, union ExprContent *expr);
+Primitive *eval_unop(Stack *stack, union ExprContent *expr);
+Primitive *eval_deref(Stack *stack, union ExprContent *expr);
+Primitive *eval_malloc(Stack *stack, union ExprContent *expr);
+Primitive *eval_ri(Stack *stack, union ExprContent *expr);
+Primitive *eval_rc(Stack *stack, union ExprContent *expr);
+Primitive *eval_fcalle(Stack *stack, union ExprContent *expr);
+
 #endif
