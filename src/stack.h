@@ -20,6 +20,8 @@ void *push(Stack *stack, void *ptr);
 
 void *pop(Stack *stack);
 
+void *popn(Stack *stack, size_t n);
+
 void purge(Stack *stack);
 
 #endif

@@ -29,6 +29,18 @@ void *pop(Stack *stack) {
   }
 }
 
+void *popn(Stack *stack, size_t n) {
+    void *ret = NULL;
+    if (stack) {
+        for (; n; n--) {
+            ret = pop(stack);
+        }
+    } else {
+        // Assert sth.
+    }
+    return ret;
+}
+
 void purge(Stack *stack) {
   struct Node *ptr = stack->top;
   while (ptr) {
