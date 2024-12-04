@@ -56,8 +56,7 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
 }
 
 Primitive *exec_decl(Stack *stack, union CmdContent *body, size_t *counter) {
-    char *name = body->DECL.name;
-    push(stack, new_empty_binding(name));
+    push(stack, new_empty_binding(body->DECL.name));
     *counter += 1;
     return NULL;
 }
@@ -73,12 +72,24 @@ Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_if(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement if evaluation
+    size_t new_counter = 0;
+    if (eval(stack, body->IF.cond)) {
+        exec(stack, body->IF.left, &new_counter);
+    } else {
+        exec(stack, body->IF.right, &new_counter);
+    }
+    popn(stack, new_counter);
     return NULL;
 }
 
 Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
     // TODO: Implement while evaluation
+    size_t new_counter;
+    while (eval(stack, body->WHILE.cond)) {
+        new_counter = 0;
+        exec(stack, body->WHILE.body, &new_counter);
+        popn(stack, new_counter);
+    }
     return NULL;
 }
 
