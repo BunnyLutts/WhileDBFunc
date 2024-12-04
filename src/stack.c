@@ -12,8 +12,8 @@ void *push(Stack *stack, void *ptr) {
   if(stack) {
     stack->top->next = new_node(stack->top, NULL, ptr);
     stack->top = stack->top->next;
-  } else {
-    stack->top = new_node(NULL, NULL, ptr);
+  } else { 
+    // Assert: You should never enter this branch.
   }
   return ptr;
 }
@@ -23,11 +23,22 @@ void *pop(Stack *stack) {
     void *res = stack->top->ptr;
     struct Node *old_top = stack->top;
     stack->top = old_top->last;
-    free(old_top);
     return res;
   } else {
     return NULL;
   }
+}
+
+void *popn(Stack *stack, size_t n) {
+    void *ret = NULL;
+    if (stack) {
+        for (; n; n--) {
+            ret = pop(stack);
+        }
+    } else {
+        // Assert sth.
+    }
+    return ret;
 }
 
 void purge(Stack *stack) {

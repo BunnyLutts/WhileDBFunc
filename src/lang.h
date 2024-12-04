@@ -10,12 +10,12 @@ enum BinOpType {
   T_MUL,
   T_DIV,
   T_MOD,
-  T_LT,
-  T_GT,
-  T_LE,
-  T_GE,
-  T_EQ,
-  T_NE,
+  T_LT,     // <
+  T_GT,     // >
+  T_LE,     // <=
+  T_GE,     // >=
+  T_EQ,     // ==
+  T_NE,     // !=
   T_AND,
   T_OR
 };
@@ -32,20 +32,20 @@ enum ExprType {
   T_UNOP,
   T_DEREF,
   T_MALLOC,
-  T_RI,
-  T_RC,
+  T_RI,     // read_int
+  T_RC,     // read_char
   T_FCALLE // Function Call as Expr
 };
 
 enum CmdType {
-  T_DECL = 0,
-  T_ASGN,
-  T_SEQ,
+  T_DECL = 0, // Variable Declaration
+  T_ASGN,   // Assignment
+  T_SEQ,    // Sequential Command
   T_IF,
   T_WHILE,
-  T_WI,
-  T_WC,
-  T_FDECL,  // Function Decl
+  T_WI,     // write_int
+  T_WC,     // write_char
+  T_FDECL,  // Function Declaration
   T_FCALLC, // Function Call as Cmd
   T_RET,    // Return
   T_RETVAL, // Return with Value
@@ -58,7 +58,7 @@ enum ListType {
 
 struct expr {
   enum ExprType t;
-  union {
+  union ExprContent {
     struct {unsigned int value; } CONST;
     struct {char * name; } VAR;
     struct {enum BinOpType op; struct expr * left; struct expr * right; } BINOP;
@@ -73,7 +73,7 @@ struct expr {
 
 struct cmd {
   enum CmdType t;
-  union {
+  union CmdContent {
     struct {char * name; } DECL;
     struct {struct expr * left; struct expr * right; } ASGN;
     struct {struct cmd * left; struct cmd * right; } SEQ;

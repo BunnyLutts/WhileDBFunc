@@ -42,7 +42,7 @@ Binding *new_closure_binding(char *sig, struct list *params, struct cmd *body) {
 Binding *search(Stack *stack, DataType type, char *sig) {
   struct Node *ptr = stack->top;
   while(ptr) {
-    if(((Binding *)ptr->ptr)->data->type == type && strcmp(((Binding *)ptr->ptr)->sig, sig)) {
+    if(((Binding *)ptr->ptr)->data->type == type && strcmp(((Binding *)ptr->ptr)->sig, sig)==0) {
       return ptr->ptr;
     }
     ptr = ptr->last;
