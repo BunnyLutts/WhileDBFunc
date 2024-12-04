@@ -12,8 +12,8 @@ void push(Stack *stack, Binding *binding) {
   if(stack) {
     stack->top->next = new_node(stack->top, NULL, binding);
     stack->top = stack->top->next;
-  } else {
-    stack->top = new_node(NULL, NULL, binding);
+  } else { 
+    // Assert: You should never enter this branch.
   }
 }
 
@@ -22,7 +22,6 @@ Binding *pop(Stack *stack) {
     Binding *res = stack->top->binding;
     struct Node *old_top = stack->top;
     stack->top = old_top->last;
-    free(old_top);
     return res;
   } else {
     return NULL;
