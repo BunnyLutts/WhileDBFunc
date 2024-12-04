@@ -20,4 +20,4 @@ jobs:
     - name: Make
       run: mkdir build && make clean && make
     - name: Test
-      run: nu auto_test.nu
+      run: make test

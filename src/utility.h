@@ -2,18 +2,19 @@
 #define UTILITY_H_INCLUDED
 
 #include "lang.h"
+#include "mem.h"
 #include "stdlib.h"
-
-#define NEW(type) (type *) malloc(sizeof(type))
-#define MALLOC(E) ;
-#define DEREF(p) ;
-
 
 typedef signed long long Primitive;
 
 #define Null() (NULL)
 #define IsNull(o) (o == Null())
 #define UnWrap(o) (IsNull(o) ? exit(0) : *o)
+
+#define AsBindingPtr(p) ((Binding *) (p))
+#define AsPrimitivePtr(p) ((Primitive *) (p))
+#define UnWrapAsBinding(p) (UnWrap(AsBindingPtr(p)))
+#define UnWrapAsPrimitive(p) (UnWrap(AsPrimitivePtr(p)))
 
 // Closure type
 typedef struct closure_prototype {
@@ -53,4 +54,7 @@ Binding *new_empty_binding(char *sig);
 Binding *new_primitive_binding(char *sig, Primitive val);
 
 Binding *new_closure_binding(char *sig, struct list *params, struct cmd *body);
+
+Binding *search(Stack *stack, DataType type, char *sig);
+
 #endif

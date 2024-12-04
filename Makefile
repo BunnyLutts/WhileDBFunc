@@ -22,23 +22,26 @@ build/lexer.o: build/lexer.c build/lexer.h build/parser.h build/lang.h
 build/stack.o: build/stack.c build/stack.h
 	gcc -c build/stack.c -o build/stack.o
 
-build/utility.o: build/utility.c build/utility.h
+build/mem.o: build/mem.c build/mem.h
+	gcc -c build/mem.c -o build/mem.o
+
+build/utility.o: build/utility.c build/utility.h build/mem.h
 	gcc -c build/utility.c -o build/utility.o
 
-build/interpreter.o: build/interpreter.h build/stack.h build/utility.h build/lang.h
+build/interpreter.o: build/interpreter.h build/utility.h
 	gcc -c build/interpreter.c -o build/interpreter.o
 
 build/main.o: build/main.c build/lexer.h build/parser.h build/lang.h
 	gcc -c build/main.c -o build/main.o
 
-bin/main: build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o
-	gcc build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o -o bin/main
+bin/main: build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o build/mem.o
+	gcc build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o build/mem.o -o bin/main
 
 all: bin/main
 
 clean:
 	rm -rf build/*
-	rm -rf test.result
+	rm -rf test_result.csv
 
 test:
 	nu auto_test.nu
