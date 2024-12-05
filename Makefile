@@ -35,6 +35,7 @@ build/main.o: build/main.c build/lexer.h build/parser.h build/lang.h
 	gcc -c build/main.c -o build/main.o
 
 bin/main: build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o build/mem.o
+        mkdir bin
 	gcc build/lang.o build/parser.o build/lexer.o build/main.o build/utility.o build/stack.o build/interpreter.o build/mem.o -o bin/main
 
 all: bin/main
@@ -42,7 +43,7 @@ all: bin/main
 clean:
 	rm -rf build/*
 	rm -rf test_result.json
-	rm -rf bin/main
+	rm -rf bin/*
 
 test:
 	nu auto_test.nu
