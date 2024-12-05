@@ -1,4 +1,5 @@
 output00.txt
 parser.output
 build/*
-test_result.csv
+test_result.json
+bin/*

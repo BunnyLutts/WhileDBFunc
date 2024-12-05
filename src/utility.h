@@ -57,4 +57,6 @@ Binding *new_closure_binding(char *sig, struct list *params, struct cmd *body);
 
 Binding *search(Stack *stack, DataType type, char *sig);
 
+struct expr *fold(struct expr *e);
+
 #endif
