@@ -55,16 +55,6 @@ make test
 
 You will get a json like `test_result` file and a table terminal output.
 
-## Progress
-
-- Lexer
-- Parser
-- Interpreter
-  - Framework
-  - TODO: most eval functions
-  - TODO: most exec functions
-- Other utilities
-
 ## Language Specification
 
 This language spec is only used for explain syntax, not absolutely applied in implement. The syntax rules are written in regex way.
