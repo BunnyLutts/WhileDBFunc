@@ -60,5 +60,8 @@ build/ :
 build/% : src/% build/
 	cp src/* build
 
+bin/  :
+	mkdir bin
+
 .DEFAULT_GOAL := all
 
