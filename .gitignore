@@ -2,4 +2,4 @@ output00.txt
 parser.output
 build/*
 test_result.json
-bin/*
+bin/main
