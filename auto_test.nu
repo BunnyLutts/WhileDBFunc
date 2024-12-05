@@ -1,5 +1,5 @@
 print "Start testing...";
-let files = ls tests | get name;
+let files = ls tests | sort-by name | get name;
 print $"Find ($files | length) tests...";
 let result = $files | each {|path| print $"Testing: ($path)" | open $path | ./bin/main};
 let raw = $files | each {|path| open $path};
