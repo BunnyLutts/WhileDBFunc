@@ -4,8 +4,8 @@ var p;
 var q;
 read_int(a);
 read_int(b);
-p = malloc(1);
-q = malloc(1);
+p = malloc(8);
+q = malloc(8);
 func exgcd(a, b, p, q) {
     if (b==1) {
         *p = 0;
