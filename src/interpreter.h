@@ -58,12 +58,8 @@ Stack *init();
 // you only need to increase counter when encounter *pure* var and func decl.
 Primitive *exec(Stack *stack, struct cmd *body, size_t *counter);
 
-// call function
-// push params bindings into stack before exec
-// pop bindings after exec
-Primitive *call(Stack *stack, Closure *closure, struct list *params);
-
 // eval expression, a hard work, I know
+// it should be EMPHASIZED THAT for any left value(such as binop and unop) you should use new_primitive instead of old value.
 Primitive *eval(Stack *stack, struct expr* expr);
 
 // a wrap of exec

@@ -138,12 +138,12 @@ Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_wi(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement wi evaluation
+    // TODO: Implement write_int evaluation
     return NULL;
 }
 
 Primitive *exec_wc(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement wc evaluation
+    // TODO: Implement write_char evaluation
     return NULL;
 }
 
@@ -245,12 +245,12 @@ Primitive *eval_malloc(Stack *stack, union ExprContent *expr) {
 }
 
 Primitive *eval_ri(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement ri evaluation
+    // TODO: Implement read_int evaluation
     return NULL;
 }
 
 Primitive *eval_rc(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement rc evaluation
+    // TODO: Implement read_char evaluation
     return NULL;
 }
 
