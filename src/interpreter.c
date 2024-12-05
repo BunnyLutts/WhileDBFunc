@@ -18,6 +18,7 @@ Stack * init() {
 
 void fault(const char *msg) {
     fprintf(stderr, "Program fault: %s\n", msg);
+    purge(_mem_);
     exit(-1);
 }
 
@@ -101,8 +102,6 @@ Primitive *exec_asgn(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement seq evaluation
-    // Check if exec returns a non-null pointer, if so, return it.
     Primitive *ret = NULL;
     if (ret = exec(stack, body->SEQ.left, counter)) {
         return ret;
