@@ -241,7 +241,7 @@ Primitive *eval_deref(Stack *stack, union ExprContent *expr) {
 
 Primitive *eval_malloc(Stack *stack, union ExprContent *expr) {
     Primitive *val = eval(stack, expr->MALLOC.arg);
-    return MALLOC(sizeof(Primitive) * *val);
+    return MALLOC(val);
 }
 
 Primitive *eval_ri(Stack *stack, union ExprContent *expr) {

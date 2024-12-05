@@ -91,7 +91,7 @@ Primitive *eval_var(Stack *stack, union ExprContent *expr);
 Primitive *eval_binop(Stack *stack, union ExprContent *expr);
 Primitive *eval_unop(Stack *stack, union ExprContent *expr);
 Primitive *eval_deref(Stack *stack, union ExprContent *expr);
-Primitive *eval_malloc(Stack *stack, union ExprContent *expr);
+Primitive *eval_malloc(Stack *stack, union ExprContent *expr); // The argument of malloc should be byte number.
 Primitive *eval_ri(Stack *stack, union ExprContent *expr);
 Primitive *eval_rc(Stack *stack, union ExprContent *expr);
 Primitive *eval_fcalle(Stack *stack, union ExprContent *expr);
