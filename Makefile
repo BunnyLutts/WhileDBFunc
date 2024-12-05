@@ -42,6 +42,7 @@ all: bin/main
 clean:
 	rm -rf build/*
 	rm -rf test_result.csv
+	rm -rf bin/*
 
 test:
 	nu auto_test.nu

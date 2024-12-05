@@ -27,7 +27,7 @@ After install, you can run:
 make test
 ```
 
-You will get a csv like `test_result` file and a table terminal output.
+You will get a json like `test_result` file and a table terminal output.
 
 ## Language Specification
 
