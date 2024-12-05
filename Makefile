@@ -63,5 +63,7 @@ build/% : src/% build/
 bin/  :
 	mkdir bin
 
+bin/* : bin/
+
 .DEFAULT_GOAL := all
 
