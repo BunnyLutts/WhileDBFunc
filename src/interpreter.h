@@ -58,12 +58,8 @@ Stack *init();
 // you only need to increase counter when encounter *pure* var and func decl.
 Primitive *exec(Stack *stack, struct cmd *body, size_t *counter);
 
-// call function
-// push params bindings into stack before exec
-// pop bindings after exec
-Primitive *call(Stack *stack, Closure *closure, struct list *params);
-
 // eval expression, a hard work, I know
+// it should be EMPHASIZED THAT for any left value(such as binop and unop) you should use new_primitive instead of old value.
 Primitive *eval(Stack *stack, struct expr* expr);
 
 // a wrap of exec
@@ -95,7 +91,7 @@ Primitive *eval_var(Stack *stack, union ExprContent *expr);
 Primitive *eval_binop(Stack *stack, union ExprContent *expr);
 Primitive *eval_unop(Stack *stack, union ExprContent *expr);
 Primitive *eval_deref(Stack *stack, union ExprContent *expr);
-Primitive *eval_malloc(Stack *stack, union ExprContent *expr);
+Primitive *eval_malloc(Stack *stack, union ExprContent *expr); // The argument of malloc should be byte number.
 Primitive *eval_ri(Stack *stack, union ExprContent *expr);
 Primitive *eval_rc(Stack *stack, union ExprContent *expr);
 Primitive *eval_fcalle(Stack *stack, union ExprContent *expr);

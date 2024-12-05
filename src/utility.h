@@ -45,6 +45,8 @@ typedef struct binding_prototype {
 
 Binding *new_binding(char *sig, Data *data);
 
+Primitive *new_primitive(Primitive val);
+
 Data *new_primitive_data(Primitive val);
 
 Data *new_closure_data(struct list *params, struct cmd *body);

@@ -25,6 +25,24 @@ git add ${Something}
 git commit -m "${Message}"
 git push
 ```
+
+You may enconter problems when executing the above commands. Then
+
+``` bash
+git push --set-upstream origin dev_${Your_name}
+```
+
+When you want to sync with the main branch:
+
+``` bash
+git checkout main
+git pull
+git checkout dev_${Your_name}
+git merge main
+```
+
+You shall NEVER directly change the main branch or push the main branch.
+
 ## How to test
 
 If you need to use `auto_test.nu` to run auto tests, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). 
