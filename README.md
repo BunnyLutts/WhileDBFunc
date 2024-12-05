@@ -2,6 +2,14 @@
 
 A repo for group assignment of PL. An Implementation of While Lang with Deference, Built-in functions and ordinary Functions.
 
+## Progress
+
+- [x] Lexer
+- [x] Parser
+- [x] Interpreter Framework
+- [ ] Interpreter
+- [ ] Robust & Correctness Test
+
 ## How to contribute (For team members)
 
 ``` bash
