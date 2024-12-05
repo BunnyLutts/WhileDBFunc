@@ -42,7 +42,7 @@ all: bin/main
 clean:
 	rm -rf build/*
 	rm -rf test_result.json
-	rm -rf bin/*
+	rm -rf bin/main
 
 test:
 	nu auto_test.nu
@@ -59,11 +59,6 @@ build/ :
 
 build/% : src/% build/
 	cp src/* build
-
-bin/  :
-	mkdir bin
-
-bin/* : bin/
 
 .DEFAULT_GOAL := all
 
