@@ -139,11 +139,23 @@ Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
 
 Primitive *exec_wi(Stack *stack, union CmdContent *body, size_t *counter) {
     // TODO: Implement write_int evaluation
+    
+    struct expr *arg = body->WI.arg;
+    Primitive *result = eval(stack, arg);
+    printf("%d\n", *result);
+    
+
     return NULL;
 }
 
 Primitive *exec_wc(Stack *stack, union CmdContent *body, size_t *counter) {
     // TODO: Implement write_char evaluation
+
+    struct expr *arg = body->WC.arg;
+    Primitive *result = eval(stack, arg);
+    char res=(char)(*result);
+    printf("%c\n", res);
+
     return NULL;
 }
 
