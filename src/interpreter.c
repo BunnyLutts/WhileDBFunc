@@ -101,7 +101,7 @@ Primitive *exec_asgn(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement seq evaluation
+    // Implement seq evaluation
     // Check if exec returns a non-null pointer, if so, return it.
     Primitive *ret = NULL;
     if (ret = exec(stack, body->SEQ.left, counter)) {
@@ -232,8 +232,21 @@ Primitive *eval_binop(Stack *stack, union ExprContent *expr) {
 }
 
 Primitive *eval_unop(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement unop evaluation
-    return NULL;
+    // Implement unop evaluation
+    Primitive* ret = NULL;
+    switch (expr->UNOP.op) {
+        case T_UMINUS:{
+            // TODO
+            ret = eval(stack, expr->UNOP.arg);
+            break;
+        }
+        case T_NOT:{
+            // TODO
+            ret = eval(stack, expr->UNOP.arg);
+            break;
+        }
+    }
+    return ret;
 }
 
 Primitive *eval_deref(Stack *stack, union ExprContent *expr) {
@@ -246,12 +259,13 @@ Primitive *eval_malloc(Stack *stack, union ExprContent *expr) {
 }
 
 Primitive *eval_ri(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement ri evaluation
+    // Implement ri evaluation
+
     return NULL;
 }
 
 Primitive *eval_rc(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement rc evaluation
+    // Implement rc evaluation
     return NULL;
 }
 
