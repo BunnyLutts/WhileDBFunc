@@ -268,7 +268,7 @@ Primitive *eval_rc(Stack *stack, union ExprContent *expr) {
     // Implement rc evaluation
     Primitive *ret = NULL;
     char read_char;
-    scanf(" %c", &read_char);
+    scanf("%c", &read_char);
     ret = new_primitive(read_char);
     return ret;
 }
