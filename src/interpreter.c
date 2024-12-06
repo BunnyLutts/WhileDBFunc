@@ -18,6 +18,7 @@ Stack * init() {
 
 void fault(const char *msg) {
     fprintf(stderr, "Program fault: %s\n", msg);
+    purge(_mem_);
     exit(-1);
 }
 
@@ -101,8 +102,6 @@ Primitive *exec_asgn(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
-    // Implement seq evaluation
-    // Check if exec returns a non-null pointer, if so, return it.
     Primitive *ret = NULL;
     if (ret = exec(stack, body->SEQ.left, counter)) {
         return ret;
@@ -139,12 +138,12 @@ Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_wi(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement wi evaluation
+    // TODO: Implement write_int evaluation
     return NULL;
 }
 
 Primitive *exec_wc(Stack *stack, union CmdContent *body, size_t *counter) {
-    // TODO: Implement wc evaluation
+    // TODO: Implement write_char evaluation
     return NULL;
 }
 
@@ -255,7 +254,7 @@ Primitive *eval_deref(Stack *stack, union ExprContent *expr) {
 
 Primitive *eval_malloc(Stack *stack, union ExprContent *expr) {
     Primitive *val = eval(stack, expr->MALLOC.arg);
-    return MALLOC(sizeof(Primitive) * *val);
+    return MALLOC(val);
 }
 
 Primitive *eval_ri(Stack *stack, union ExprContent *expr) {

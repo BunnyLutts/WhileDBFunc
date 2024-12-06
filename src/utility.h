@@ -45,6 +45,8 @@ typedef struct binding_prototype {
 
 Binding *new_binding(char *sig, Data *data);
 
+Primitive *new_primitive(Primitive val);
+
 Data *new_primitive_data(Primitive val);
 
 Data *new_closure_data(struct list *params, struct cmd *body);
@@ -56,5 +58,7 @@ Binding *new_primitive_binding(char *sig, Primitive val);
 Binding *new_closure_binding(char *sig, struct list *params, struct cmd *body);
 
 Binding *search(Stack *stack, DataType type, char *sig);
+
+struct expr *fold(struct expr *e);
 
 #endif

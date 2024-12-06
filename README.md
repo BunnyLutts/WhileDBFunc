@@ -2,6 +2,14 @@
 
 A repo for group assignment of PL. An Implementation of While Lang with Deference, Built-in functions and ordinary Functions.
 
+## Progress
+
+- [x] Lexer
+- [x] Parser
+- [x] Interpreter Framework
+- [ ] Interpreter
+- [ ] Robust & Correctness Test
+
 ## How to contribute (For team members)
 
 ``` bash
@@ -17,6 +25,24 @@ git add ${Something}
 git commit -m "${Message}"
 git push
 ```
+
+You may enconter problems when executing the above commands. Then
+
+``` bash
+git push --set-upstream origin dev_${Your_name}
+```
+
+When you want to sync with the main branch:
+
+``` bash
+git checkout main
+git pull
+git checkout dev_${Your_name}
+git merge main
+```
+
+You shall NEVER directly change the main branch or push the main branch.
+
 ## How to test
 
 If you need to use `auto_test.nu` to run auto tests, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). 
@@ -27,7 +53,7 @@ After install, you can run:
 make test
 ```
 
-You will get a csv like `test_result` file and a table terminal output.
+You will get a json like `test_result` file and a table terminal output.
 
 ## Language Specification
 

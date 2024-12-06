@@ -1,0 +1,28 @@
+var a;
+var b;
+var p;
+var q;
+read_int(a);
+read_int(b);
+p = malloc(8);
+q = malloc(8);
+func exgcd(a, b, p, q) {
+    if (b==1) {
+        *p = 0;
+        *q = 1;
+        return 1
+    } else {
+        var tp;
+        var tq;
+        var ret;
+        tp = malloc(1);
+        tq = malloc(1);
+        ret = exgcd(b, b%a, tp, tq);
+        *p = *tq;
+        *q = *tp - (a/b) * *tq
+        return ret
+    }
+};
+write_int(exgcd(a, b, p, q));
+write_int(*p);
+write_int(*q);

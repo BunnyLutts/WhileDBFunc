@@ -19,7 +19,7 @@ void *push(Stack *stack, void *ptr) {
 }
 
 void *pop(Stack *stack) {
-  if(stack) {
+  if(stack->top) {
     void *res = stack->top->ptr;
     struct Node *old_top = stack->top;
     stack->top = old_top->last;
@@ -31,7 +31,7 @@ void *pop(Stack *stack) {
 
 void *popn(Stack *stack, size_t n) {
     void *ret = NULL;
-    if (stack) {
+    if (stack->top) {
         for (; n; n--) {
             ret = pop(stack);
         }

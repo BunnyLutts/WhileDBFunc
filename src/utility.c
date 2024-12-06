@@ -7,6 +7,12 @@ Binding *new_binding(char *sig, Data *data) {
   return res;
 }
 
+Primitive *new_primitive(Primitive val) {
+    Primitive *res = NEW(Primitive);
+    *res = val;
+    return res;
+}
+
 Data *new_primitive_data(Primitive val) {
   Data *res = NEW(Data);
   res->type = D_PRIMITIVE;
