@@ -139,11 +139,23 @@ Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
 
 Primitive *exec_wi(Stack *stack, union CmdContent *body, size_t *counter) {
     // TODO: Implement write_int evaluation
+    
+    struct expr *arg = body->WI.arg;
+    Primitive *result = eval(stack, arg);
+    printf("%lld\n", *result);
+    
+
     return NULL;
 }
 
 Primitive *exec_wc(Stack *stack, union CmdContent *body, size_t *counter) {
     // TODO: Implement write_char evaluation
+
+    struct expr *arg = body->WC.arg;
+    Primitive *result = eval(stack, arg);
+    char res=(char)(*result);
+    printf("%c\n", res);
+
     return NULL;
 }
 
@@ -217,16 +229,47 @@ Primitive *eval(Stack *stack, struct expr* expr) {
 
 Primitive *eval_const(Stack *stack, union ExprContent *expr) {
     // TODO: Implement const evaluation
+    if(expr)
+        {
+            Primitive *ret = new_primitive(expr->CONST.value);
+            return ret;
+        }
     return NULL;
 }
 
 Primitive *eval_var(Stack *stack, union ExprContent *expr) {
     // TODO: Implement var evaluation
+    if(expr)
+    {
+        Binding *b = search(stack, D_PRIMITIVE, expr->VAR.name);
+        if(!b) return NULL;
+        Primitive *ret=new_primitive(*(b->data->data->primitive)); 
+        return ret;
+    }
     return NULL;
 }
 
 Primitive *eval_binop(Stack *stack, union ExprContent *expr) {
     // TODO: Implement binop evaluation
+    if(expr)
+    {
+        switch(expr->BINOP.op)
+        {
+            case T_PLUS: return new_primitive( *eval(stack, expr->BINOP.left) + *eval(stack, expr->BINOP.right));
+            case T_MINUS: return new_primitive( *eval(stack, expr->BINOP.left) - *eval(stack, expr->BINOP.right));
+            case T_MUL: return new_primitive( *eval(stack, expr->BINOP.left) * *eval(stack, expr->BINOP.right));
+            case T_DIV: return new_primitive( *eval(stack, expr->BINOP.left) / *eval(stack, expr->BINOP.right));
+            case T_MOD: return new_primitive( *eval(stack, expr->BINOP.left) % *eval(stack, expr->BINOP.right));
+            case T_LT: return new_primitive( *eval(stack, expr->BINOP.left) < *eval(stack, expr->BINOP.right));
+            case T_GT: return new_primitive( *eval(stack, expr->BINOP.left) > *eval(stack, expr->BINOP.right));
+            case T_LE: return new_primitive( *eval(stack, expr->BINOP.left) <= *eval(stack, expr->BINOP.right));
+            case T_GE: return new_primitive( *eval(stack, expr->BINOP.left) >= *eval(stack, expr->BINOP.right));
+            case T_EQ: return new_primitive( *eval(stack, expr->BINOP.left) == *eval(stack, expr->BINOP.right));
+            case T_NE: return new_primitive( *eval(stack, expr->BINOP.left) != *eval(stack, expr->BINOP.right));
+            case T_AND: return new_primitive( *eval(stack, expr->BINOP.left) && *eval(stack, expr->BINOP.right));
+            case T_OR: return new_primitive( *eval(stack, expr->BINOP.left) || *eval(stack, expr->BINOP.right));
+        }
+    }
     return NULL;
 }
 
