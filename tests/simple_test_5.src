@@ -17,7 +17,7 @@ func exgcd(a, b, p, q) {
         var ret;
         tp = malloc(8);
         tq = malloc(8);
-        ret = exgcd(b, b%a, tp, tq);
+        ret = exgcd(b, a%b, tp, tq);
         *p = *tq;
         *q = *tp - (a/b) * (*tq);
         return ret
