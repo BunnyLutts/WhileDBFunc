@@ -105,9 +105,14 @@ Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
     Primitive *ret = NULL;
     if (ret = exec(stack, body->SEQ.left, counter)) {
         return ret;
-    } else {
-        ret = exec(stack, body->SEQ.right, counter);
     }
+    struct cmd *seqs = body->SEQ.right;
+    for (; seqs->t == T_SEQ; seqs = seqs->d.SEQ.right) {
+        if (ret = exec(stack, seqs->d.SEQ.left, counter)) {
+            return ret;
+        }
+    }
+    ret = exec(stack, seqs, counter);
     return ret;
 }
 
@@ -220,6 +225,10 @@ Primitive *eval(Stack *stack, struct expr* expr) {
         }
         case T_FCALLE: {
             ret = eval_fcalle(stack, &expr->d);
+            break;
+        }
+        case T_DEREF: {
+            ret = eval_deref(stack, &expr->d);
             break;
         }
     }
