@@ -33,7 +33,7 @@ void push_args(Stack *stack, Closure *closure, struct list *args, size_t *counte
     Stack *prev_stack = stack;
     for (; params && params->t != T_NIL && args && args->t != T_NIL; params = params->d.PARAMS.tails, args = args->d.PARAMS.tails) {
         push(stack, new_primitive_binding(params->d.PARAMS.head->d.VAR.name, *eval(prev_stack, args->d.PARAMS.head)));
-        *counter++;
+        *counter+=1;
     }
     if ((params && params->t!= T_NIL) ^ (args && args->t!= T_NIL)) {
         fault("Wrong number of arguments.");
@@ -67,7 +67,7 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
             return exec_fdecl(stack, &body->d, counter);
         }
         case T_FCALLC: {
-            return exec_asgn(stack, &body->d, counter);
+            return exec_fcallc(stack, &body->d, counter);
         }
         case T_RET: {
             return exec_ret(stack, &body->d, counter);
