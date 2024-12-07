@@ -12,9 +12,9 @@ var asdsagfadgadfg;
 var dfaog6800wrg098p;
 var adf;
 adf = -a;
-adf = *a*a;
+adf = a*a;
 adf = 11231241;
 c = adf*adf*(-123154115);
 write_int(1234134);
 write_int(1231);
-write_int(*adf*1324-a-c*b)
+write_int(adf*1324-a-c*b)

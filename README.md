@@ -45,15 +45,35 @@ You shall NEVER directly change the main branch or push the main branch.
 
 ## How to test
 
-If you need to use `auto_test.nu` to run auto tests, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). 
+Then, if you need to =to run auto tests, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). 
 If you use `npm`, you can simply run `make depend` to install nushell. 
 After install, you can run:
 
 ```bash
-make test
+make test_all
 ```
 
-You will get a json like `test_result` file and a table terminal output.
+This command will build a debug version and out put a json like `test_result` file.
+
+If you want to test on one test, firstly import the function(TODO):
+
+```nu
+nu scripts/test_one.nu
+```
+
+Then prepare a debug version:
+
+```bash
+make MODE=DEBUG
+```
+
+Then use
+
+```nu
+test_one $file_name
+```
+
+To get a json like output.
 
 ## Language Specification
 
