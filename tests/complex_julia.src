@@ -1,0 +1,49 @@
+var width;
+var height;
+var array;
+var MOD;
+width = 100;
+height = 100;
+array = malloc((2*width+1)*(2*height+1)*(8+8));
+MOD = 16384-1;
+func get(x,y) {
+  return array+(x+width)*(2*height+1)*(8+8)+(y+height)*(8+8)
+};
+func add(x,y,z) {
+  *z = (*x + *y) % MOD;
+  *(z+8) = (*(x+8) + *(y+8)) % MOD;
+  return
+};
+func mul(x,y,z) {
+  var tmp;
+  tmp = malloc(8+8);
+  *tmp = (*x * *y - *(x+8) * *(y+8)) % MOD;
+  *(tmp+8) = (*(x+8) * *(y) + *(x) * *(y+8)) % MOD;
+  *z = *tmp;
+  *(z+8) = *(tmp+8);
+  return
+};
+var Z;
+Z = malloc(8+8);
+*Z = 113;
+*(Z+8) = 477;
+var i;
+var j;
+var k;
+i = -width;
+while i <= width do {
+  j = -height;
+  while j <= height do {
+    k = (i*j) % 19;
+    var cur;
+    cur = get(i,j);
+    while k > 0 do {
+      add(Z,cur,cur);
+      mul(cur,cur,cur);
+      k = k-1
+    };
+    j = j+1
+  };
+  i = i+1
+};
+write_int(*get(1,1))
