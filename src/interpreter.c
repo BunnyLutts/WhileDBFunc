@@ -231,8 +231,19 @@ Primitive *eval_binop(Stack *stack, union ExprContent *expr) {
 }
 
 Primitive *eval_unop(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement unop evaluation
-    return NULL;
+    // Implement unop evaluation
+    Primitive *ret = NULL;
+    switch (expr->UNOP.op) {
+        case T_UMINUS: {
+            ret = new_primitive(-(*eval(stack, expr->UNOP.arg)));
+            break;
+        }
+        case T_NOT: {
+            ret = new_primitive(!(*eval(stack, expr->UNOP.arg)));
+            break;
+        }
+    }
+    return ret;
 }
 
 Primitive *eval_deref(Stack *stack, union ExprContent *expr) {
@@ -241,17 +252,25 @@ Primitive *eval_deref(Stack *stack, union ExprContent *expr) {
 
 Primitive *eval_malloc(Stack *stack, union ExprContent *expr) {
     Primitive *val = eval(stack, expr->MALLOC.arg);
-    return MALLOC(val);
+    return MALLOC(*val);
 }
 
 Primitive *eval_ri(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement read_int evaluation
-    return NULL;
+    // Implement ri evaluation
+    Primitive *ret = NULL;
+    Primitive read_num;
+    scanf("%lld", &read_num);
+    ret = new_primitive(read_num);
+    return ret;
 }
 
 Primitive *eval_rc(Stack *stack, union ExprContent *expr) {
-    // TODO: Implement read_char evaluation
-    return NULL;
+    // Implement rc evaluation
+    Primitive *ret = NULL;
+    char read_char;
+    scanf("%c", &read_char);
+    ret = new_primitive(read_char);
+    return ret;
 }
 
 Primitive *eval_fcalle(Stack *stack, union ExprContent *expr) {
