@@ -30,13 +30,17 @@ void checkp(void *p) {
 
 void push_args(Stack *stack, Closure *closure, struct list *args, size_t *counter) {
     struct list *params = closure->params;
-    Stack *prev_stack = stack;
+    Stack tmp_stack;
+    tmp_stack.top = NULL;
     for (; params && params->t != T_NIL && args && args->t != T_NIL; params = params->d.PARAMS.tails, args = args->d.PARAMS.tails) {
-        push(stack, new_primitive_binding(params->d.PARAMS.head->d.VAR.name, *eval(prev_stack, args->d.PARAMS.head)));
-        *counter+=1;
+        push(&tmp_stack, new_primitive_binding(params->d.PARAMS.head->d.VAR.name, *eval(stack, args->d.PARAMS.head)));
     }
     if ((params && params->t!= T_NIL) ^ (args && args->t!= T_NIL)) {
         fault("Wrong number of arguments.");
+    }
+    for (struct Node *ptr = tmp_stack.top; ptr!=NULL; ptr = ptr->last) {
+        push(stack, ptr->ptr);
+        *counter+=1;
     }
 }
 
@@ -119,7 +123,7 @@ Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
 Primitive *exec_if(Stack *stack, union CmdContent *body, size_t *counter) {
     Primitive *ret = NULL;
     size_t new_counter = 0;
-    if (eval(stack, body->IF.cond)) {
+    if (*eval(stack, body->IF.cond)) {
         ret = exec(stack, body->IF.left, &new_counter);
     } else {
         ret = exec(stack, body->IF.right, &new_counter);
@@ -302,8 +306,8 @@ Primitive *eval_deref(Stack *stack, union ExprContent *expr) {
 }
 
 Primitive *eval_malloc(Stack *stack, union ExprContent *expr) {
-    Primitive *val = eval(stack, expr->MALLOC.arg);
-    return MALLOC(*val);
+    Primitive *res = new_primitive((Primitive) MALLOC(*eval(stack, expr->MALLOC.arg)));
+    return res;
 }
 
 Primitive *eval_ri(Stack *stack, union ExprContent *expr) {
@@ -333,7 +337,7 @@ Primitive *eval_fcalle(Stack *stack, union ExprContent *expr) {
     }
     Closure *func = func_b->data->data.closure;
     push_args(stack, func, expr->FCALLE.params, &new_counter);
-    ret = exec(stack, func->body, &new_counter);
+    ret = new_primitive(*exec(stack, func->body, &new_counter));
     popn(stack, new_counter);
     return ret;
 }
