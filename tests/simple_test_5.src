@@ -7,10 +7,10 @@ b = read_int();
 p = malloc(8);
 q = malloc(8);
 func exgcd(a, b, p, q) {
-    if (b==1) {
-        *p = 0;
-        *q = 1;
-        return 1
+    if (b==0) {
+        *p = 1;
+        *q = 0;
+        return a
     } else {
         var tp;
         var tq;
