@@ -52,8 +52,8 @@ clean:
 	rm -rf test_result.json
 	rm -rf bin/*
 
-test:
-	nu auto_test.nu
+test_all:
+	nu scripts/test_all.nu
 
 depend:
 	npm install -g nushell

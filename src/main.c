@@ -30,7 +30,9 @@ int main(int argc, char **argv) {
     #ifdef DEBUG_MODE
     printf("__PARSE_RESULT_BEGIN__\n");
     print_cmd(root);
-    printf(" __PARSE_RESULT_END__\n");
+    printf("\n__PARSE_RESULT_END__\n"); 
+    // These flags are used for result parsing
+    // Carefully modify them!
     printf("__INPTR_RESULT_BEGIN__\n");
     #ifdef INTERPRETER_ENABLED
     exec_prog(root);
@@ -38,7 +40,7 @@ int main(int argc, char **argv) {
     #ifndef INTERPRETER_ENABLED
     printf("EMPTY\n");
     #endif
-    printf(" __INPTR_RESULT_END__\n");
+    printf("__INPTR_RESULT_END__\n");
     #else
     #ifdef INTERPRETER_ENABLED
     exec_prog(root);

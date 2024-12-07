@@ -16,8 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
-      run: sudo apt-get install pkg-config libssl-dev build-essential && npm install -g nushell
+      run: sudo apt-get install pkg-config libssl-dev build-essential && make depend
     - name: Make
-      run: mkdir build && make clean && make
+      run: mkdir build && make clean && make MODE=DEBUG
     - name: Test
-      run: make test
+      run: touch test_result.json && make test_all
+    - name: Show
+      run: cat test_result.json
