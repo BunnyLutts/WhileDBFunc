@@ -243,8 +243,7 @@ Primitive *eval_var(Stack *stack, union ExprContent *expr) {
     {
         Binding *b = search(stack, D_PRIMITIVE, expr->VAR.name);
         if(!b) return NULL;
-        Primitive *ret=new_primitive(*(b->data->data->primitive)); 
-        return ret;
+        return b->data->data->primitive;
     }
     return NULL;
 }
