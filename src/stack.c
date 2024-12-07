@@ -25,7 +25,9 @@ void *pop(Stack *stack) {
     stack->top = old_top->last;
     return res;
   } else {
-    return NULL;
+    void *res = stack->top->ptr;
+    stack->top = NULL;
+    return res;
   }
 }
 

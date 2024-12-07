@@ -175,7 +175,7 @@ Primitive *exec_fcallc(Stack *stack, union CmdContent *body, size_t *counter) {
     if (!func_b) {
         fault("Undefined function!");
     }
-    Closure *func = func_b->data->data->closure;
+    Closure *func = func_b->data->data.closure;
     push_args(stack, func, body->FCALLC.params, &new_counter);
     exec(stack, func->body, &new_counter);
     popn(stack, new_counter);
@@ -252,7 +252,7 @@ Primitive *eval_var(Stack *stack, union ExprContent *expr) {
     {
         Binding *b = search(stack, D_PRIMITIVE, expr->VAR.name);
         if(!b) return NULL;
-        return b->data->data->primitive;
+        return b->data->data.primitive;
     }
     return NULL;
 }
@@ -331,7 +331,7 @@ Primitive *eval_fcalle(Stack *stack, union ExprContent *expr) {
     if (!func_b) {
         fault("Undefined function!");
     }
-    Closure *func = func_b->data->data->closure;
+    Closure *func = func_b->data->data.closure;
     push_args(stack, func, expr->FCALLE.params, &new_counter);
     ret = exec(stack, func->body, &new_counter);
     popn(stack, new_counter);

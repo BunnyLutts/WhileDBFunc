@@ -33,7 +33,7 @@ typedef struct data_prototype {
   union {
     Primitive *primitive;
     Closure *closure;
-  } *data;
+  } data;
 } Data;
 
 // Binding type
