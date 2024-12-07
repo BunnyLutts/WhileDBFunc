@@ -1,7 +1,7 @@
 MODE=RELEASE
 
 ifeq ($(MODE), DEBUG)
-CFLAGS = -g3
+CFLAGS = -g3 -DDEBUG_MODE
 else
 CFLAGS = -O2
 endif

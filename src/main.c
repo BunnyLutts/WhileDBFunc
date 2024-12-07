@@ -13,20 +13,39 @@ int yyparse();
 
 int main(int argc, char **argv) {
     INIT;
-    yyin = stdin;
+    if (argc > 1) {
+        if ((yyin = fopen(argv[1], "r"))==NULL) {
+            fprintf(stderr, "Can't open file %s\n", argv[1]);
+            CLEAN;
+            exit(1);
+        }
+    } else {
+        yyin = stdin;
+    }
     yyparse();
-    fclose(stdin);
-    printf("__PARSE_RESULT_BEGIN__ ");
+    if (argc > 1) {
+        fclose(yyin);
+    }
+    // fclose(stdin);
+    #ifdef DEBUG_MODE
+    printf("__PARSE_RESULT_BEGIN__\n");
     print_cmd(root);
-    printf(" __PARSE_RESULT_END__ ");
-    printf("__INPTR_RESULT_BEGIN__ ");
+    printf(" __PARSE_RESULT_END__\n");
+    printf("__INPTR_RESULT_BEGIN__\n");
     #ifdef INTERPRETER_ENABLED
     exec_prog(root);
     #endif
     #ifndef INTERPRETER_ENABLED
-    printf("EMPTY");
+    printf("EMPTY\n");
     #endif
-    printf(" __INPTR_RESULT_END__");
+    printf(" __INPTR_RESULT_END__\n");
+    #else
+    #ifdef INTERPRETER_ENABLED
+    exec_prog(root);
+    #else
+    printf("No interpreter enabled.\n");
+    #endif
+    #endif
     
     CLEAN;
 }
