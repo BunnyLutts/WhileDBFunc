@@ -142,7 +142,7 @@ Primitive *exec_wi(Stack *stack, union CmdContent *body, size_t *counter) {
     
     struct expr *arg = body->WI.arg;
     Primitive *result = eval(stack, arg);
-    printf("%d\n", *result);
+    printf("%lld\n", *result);
     
 
     return NULL;
