@@ -19,10 +19,10 @@ func exgcd(a, b, p, q) {
         tq = malloc(1);
         ret = exgcd(b, b%a, tp, tq);
         *p = *tq;
-        *q = *tp - (a/b) * *tq
+        *q = *tp - (a/b) * (*tq);
         return ret
     }
 };
 write_int(exgcd(a, b, p, q));
 write_int(*p);
-write_int(*q);
+write_int(*q)
