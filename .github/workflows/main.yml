@@ -20,6 +20,6 @@ jobs:
     - name: Make
       run: mkdir build && make clean && make MODE=DEBUG
     - name: Test
-      run: touch test_result.json && make test
+      run: touch test_result.json && make test_all
     - name: Show
       run: cat test_result.json
