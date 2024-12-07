@@ -33,7 +33,7 @@ void push_args(Stack *stack, Closure *closure, struct list *args, size_t *counte
     Stack *prev_stack = stack;
     for (; params && params->t != T_NIL && args && args->t != T_NIL; params = params->d.PARAMS.tails, args = args->d.PARAMS.tails) {
         push(stack, new_primitive_binding(params->d.PARAMS.head->d.VAR.name, *eval(prev_stack, args->d.PARAMS.head)));
-        *counter++;
+        *counter+=1;
     }
     if ((params && params->t!= T_NIL) ^ (args && args->t!= T_NIL)) {
         fault("Wrong number of arguments.");
@@ -58,7 +58,7 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
             return exec_while(stack, &body->d, counter);
         }
         case T_WI: { 
-            return exec_if(stack, &body->d, counter);
+            return exec_wi(stack, &body->d, counter);
         }
         case T_WC: {
             return exec_wc(stack, &body->d, counter);
@@ -67,7 +67,7 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
             return exec_fdecl(stack, &body->d, counter);
         }
         case T_FCALLC: {
-            return exec_asgn(stack, &body->d, counter);
+            return exec_fcallc(stack, &body->d, counter);
         }
         case T_RET: {
             return exec_ret(stack, &body->d, counter);
@@ -105,9 +105,14 @@ Primitive *exec_seq(Stack *stack, union CmdContent *body, size_t *counter) {
     Primitive *ret = NULL;
     if (ret = exec(stack, body->SEQ.left, counter)) {
         return ret;
-    } else {
-        ret = exec(stack, body->SEQ.right, counter);
     }
+    struct cmd *seqs = body->SEQ.right;
+    for (; seqs->t == T_SEQ; seqs = seqs->d.SEQ.right) {
+        if (ret = exec(stack, seqs->d.SEQ.left, counter)) {
+            return ret;
+        }
+    }
+    ret = exec(stack, seqs, counter);
     return ret;
 }
 
@@ -126,7 +131,7 @@ Primitive *exec_if(Stack *stack, union CmdContent *body, size_t *counter) {
 Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
     Primitive *ret = NULL;
     size_t new_counter;
-    while (eval(stack, body->WHILE.cond)) {
+    while (*eval(stack, body->WHILE.cond)) {
         new_counter = 0;
         ret = exec(stack, body->WHILE.body, &new_counter);
         popn(stack, new_counter);
@@ -170,7 +175,7 @@ Primitive *exec_fcallc(Stack *stack, union CmdContent *body, size_t *counter) {
     if (!func_b) {
         fault("Undefined function!");
     }
-    Closure *func = func_b->data->data->closure;
+    Closure *func = func_b->data->data.closure;
     push_args(stack, func, body->FCALLC.params, &new_counter);
     exec(stack, func->body, &new_counter);
     popn(stack, new_counter);
@@ -222,6 +227,10 @@ Primitive *eval(Stack *stack, struct expr* expr) {
             ret = eval_fcalle(stack, &expr->d);
             break;
         }
+        case T_DEREF: {
+            ret = eval_deref(stack, &expr->d);
+            break;
+        }
     }
     checkp(ret);
     return ret;
@@ -243,8 +252,7 @@ Primitive *eval_var(Stack *stack, union ExprContent *expr) {
     {
         Binding *b = search(stack, D_PRIMITIVE, expr->VAR.name);
         if(!b) return NULL;
-        Primitive *ret=new_primitive(*(b->data->data->primitive)); 
-        return ret;
+        return b->data->data.primitive;
     }
     return NULL;
 }
@@ -323,7 +331,7 @@ Primitive *eval_fcalle(Stack *stack, union ExprContent *expr) {
     if (!func_b) {
         fault("Undefined function!");
     }
-    Closure *func = func_b->data->data->closure;
+    Closure *func = func_b->data->data.closure;
     push_args(stack, func, expr->FCALLE.params, &new_counter);
     ret = exec(stack, func->body, &new_counter);
     popn(stack, new_counter);

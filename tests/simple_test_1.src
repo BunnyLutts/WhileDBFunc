@@ -8,6 +8,7 @@ while n != 0 do {
   var tmp;
   tmp = fibb_2;
   fibb_2 = fibb_1 + fibb_2;
-  fibb_1 = tmp
+  fibb_1 = tmp;
+  n = n - 1
 };
 write_int(fibb_2)

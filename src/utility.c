@@ -16,24 +16,24 @@ Primitive *new_primitive(Primitive val) {
 Data *new_primitive_data(Primitive val) {
   Data *res = NEW(Data);
   res->type = D_PRIMITIVE;
-  res->data->primitive = NEW(Primitive);
-  *res->data->primitive = val;
+  res->data.primitive = NEW(Primitive);
+  *res->data.primitive = val;
   return res;
 }
 
 Data *new_closure_data(struct list *params, struct cmd *body) {
   Data *res = NEW(Data);
   res->type = D_CLOSURE;
-  res->data->closure = NEW(Closure);
-  res->data->closure->params = params;
-  res->data->closure->body = body;
+  res->data.closure = NEW(Closure);
+  res->data.closure->params = params;
+  res->data.closure->body = body;
   return res;
 }
 
 Binding *new_empty_binding(char *sig) {
   Data *data = NEW(Data);
   data->type = D_EMPTY;
-  data->data = NULL;
+  data->data.primitive = NULL;
   return new_binding(sig, data);
 }
 

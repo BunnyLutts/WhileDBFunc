@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 // Use this macro to control whether to run the interpreter or not
-// #define INTERPRETER_ENABLED
+#define INTERPRETER_ENABLED
 
 // This is the head file of interpreter
 // In this file, we define the components of the interpreter

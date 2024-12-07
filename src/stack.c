@@ -9,11 +9,11 @@ struct Node *new_node(struct Node *last, struct Node *next, void *ptr) {
 }
 
 void *push(Stack *stack, void *ptr) {
-  if(stack) {
+  if(stack->top) {
     stack->top->next = new_node(stack->top, NULL, ptr);
     stack->top = stack->top->next;
   } else { 
-    // Assert: You should never enter this branch.
+    stack->top = new_node(NULL, NULL, ptr);
   }
   return ptr;
 }
@@ -25,7 +25,9 @@ void *pop(Stack *stack) {
     stack->top = old_top->last;
     return res;
   } else {
-    return NULL;
+    void *res = stack->top->ptr;
+    stack->top = NULL;
+    return res;
   }
 }
 
