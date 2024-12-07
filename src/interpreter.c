@@ -58,7 +58,7 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
             return exec_while(stack, &body->d, counter);
         }
         case T_WI: { 
-            return exec_if(stack, &body->d, counter);
+            return exec_wi(stack, &body->d, counter);
         }
         case T_WC: {
             return exec_wc(stack, &body->d, counter);
@@ -131,7 +131,7 @@ Primitive *exec_if(Stack *stack, union CmdContent *body, size_t *counter) {
 Primitive *exec_while(Stack *stack, union CmdContent *body, size_t *counter) {
     Primitive *ret = NULL;
     size_t new_counter;
-    while (eval(stack, body->WHILE.cond)) {
+    while (*eval(stack, body->WHILE.cond)) {
         new_counter = 0;
         ret = exec(stack, body->WHILE.body, &new_counter);
         popn(stack, new_counter);
