@@ -87,7 +87,7 @@ I must say, it's much easier to write a lexer & parser in functional lanuages!
 *Progress*
 
 - [x] lexer
-- [ ] parser
+- [x] parser
 - [ ] c-converter / interpreter
 
 `Racket` is a sibling of `Scheme`, so you should be familier with it.
