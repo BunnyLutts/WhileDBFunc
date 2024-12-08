@@ -109,14 +109,6 @@
     return TM_MOD;
     }
 
-"<" {
-    return TM_LT;
-    }
-
-">" {
-    return TM_GT;
-    }
-
 "<=" {
     return TM_LE;
     }
@@ -131,6 +123,14 @@
 
 "!=" {
     return TM_NE;
+    }
+
+"<" {
+    return TM_LT;
+    }
+
+">" {
+    return TM_GT;
     }
 
 "=" {

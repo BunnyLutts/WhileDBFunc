@@ -7,7 +7,7 @@ A repo for group assignment of PL. An Implementation of While Lang with Deferenc
 - [x] Lexer
 - [x] Parser
 - [x] Interpreter Framework
-- [ ] Interpreter
+- [x] Interpreter
 - [ ] Robust & Correctness Test
 
 ## How to contribute (For team members)
@@ -75,6 +75,22 @@ test_one $file_name
 ```
 
 To get a json like output.
+
+## Cross Verification
+
+To ensure correctness, we need to use some method to simulate our results.
+
+Now the method is using `racket` to lex and parse `.src`, then convert it to `C` (or directly run it in `racket`)
+
+I must say, it's much easier to write a lexer & parser in functional lanuages!
+
+*Progress*
+
+- [x] lexer
+- [ ] parser
+- [ ] c-converter / interpreter
+
+`Racket` is a sibling of `Scheme`, so you should be familier with it.
 
 ## Language Specification
 
