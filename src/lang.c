@@ -346,6 +346,7 @@ void print_cmd(struct cmd * c) {
     printf("], ");
     print_cmd(c -> d.FDECL.body);
     printf(")");
+    break;
   case T_FCALLC:
     printf("FCALLC(%s, [", c -> d.FCALLC.fname);
     print_list(c -> d.FCALLC.params);

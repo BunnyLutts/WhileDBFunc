@@ -55,15 +55,16 @@ make test_all
 
 This command will build a debug version and out put a json like `test_result` file.
 
-If you want to test on one test, firstly import the function(TODO):
+If you want to test on one test, you need to use `nu` as shell. Firstly import the function:
 
-```nu
-nu scripts/test_one.nu
+```bash
+nu
+source scripts/test_one.nu
 ```
 
 Then prepare a debug version:
 
-```bash
+```nu
 make MODE=DEBUG
 ```
 
