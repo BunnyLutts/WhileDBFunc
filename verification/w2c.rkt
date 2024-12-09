@@ -208,7 +208,7 @@
 
 (define (scan-func p)
   (match p 
-    [`(func ,@res) 
+    [`(func ,res) 
       (begin (set! func-list (cons p func-list)) '(nop))]
     [else 
       (if [list? p] (map scan-func p) p)]))
