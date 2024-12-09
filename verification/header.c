@@ -7,14 +7,14 @@ typedef unsigned long long _num_;
 
 _num_ read_int() {
   _num_ tmp;
-  scanf("%ll", &tmp);
+  scanf("%lld", &tmp);
   return tmp;
 }
 _num_ read_char() {
   return (_num_) getchar();
 }
 void write_int(_num_ input) {
-  printf("%ll", input);
+  printf("%lld", input);
 }
 void write_char(char *str) {
   printf("%s", str);
