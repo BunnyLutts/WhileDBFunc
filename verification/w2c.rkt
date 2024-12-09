@@ -2,9 +2,11 @@
 (require racket/string)
 (require parser-tools/lex)
 (require parser-tools/yacc)
-(require uuid)
+(require racket/match)
 
-(define key-gen (lambda () (string-replace (uuid-string) "-" "_")))
+(define counter 0)
+
+(define key-gen (lambda () (set! counter (+ counter 1)) (string-append "_" (number->string counter))))
 
 (define (lexer-wraper lxr input)
   (let ([cur (lxr input)])
@@ -180,76 +182,75 @@
         [t (cdr pack)])
       (if [or (not (list? p)) (null? p)]
           pack
-          (cond [(eq? (fst p) 'decl)
-                  (begin  (define bind `(id ,(snd p) ,(key-gen)))
-                          (set! var-list (cons bind var-list))
-                          (set! t (cons bind t))
-                          (set! t (replace bind t))
-                          (cons '(nop) t))]
-                [(eq? (fst p) 'func)
-                  (begin  (define tmp-var-list '())
-                          (map (lambda (x) (set! tmp-var-list (cons `(id ,(snd x) ,(key-gen)) tmp-var-list))) (snd (thd p)))
+          (match p
+            [`(decl ,var)
+              (begin  (define bind `(id ,var ,(key-gen)))
+                      (set! var-list (cons bind var-list))
+                      (set! t (cons bind t))
+                      (set! t (replace bind t))
+                      (cons '(nop) t))]
+            [`(func ,sig (list-params ,params) ,body)
+              (begin  (define tmp-var-list '())
+                      (map (lambda (x) (set! tmp-var-list (cons `(id ,(snd x) ,(key-gen)) tmp-var-list))) params)
                           (set! var-list (append tmp-var-list var-list))
                           (set! t (append tmp-var-list t))
                           (set! t (replace-list t tmp-var-list))
-                          (define lpr (replace-list (snd (thd p)) t))
-                          (define nxt (scan-var-core (cons (frd p) t)))
+                          (define lpr (replace-list params t))
+                          (define nxt (scan-var-core (cons body t)))
                           (set! p `(func ,(snd p) (list-params ,lpr) ,(car nxt)))
                           (cons p (cdr nxt)))]
-                [else 
-                  (begin  (set! p (replace-list p t))
-                          (applier scan-var-core p t))]))))
+            [else 
+              (begin  (set! p (replace-list p t))
+                      (applier scan-var-core p t))]))))
 
 (define (scan-var x) (scan-var-core (cons x '())))
 
 (define (scan-func p)
-  (if [or (not (list? p)) (null? p)]
-      p
-      (cond [(eq? (fst p) 'func)
-              (begin (set! func-list (cons p func-list)) '(nop))]
-            [else (map scan-func p)])))
+  (match p 
+    [`(func ,res) 
+      (begin (set! func-list (cons p func-list)) '(nop))]
+    [else 
+      (if [list? p] (map scan-func p) p)]))
 
 (define (emit p)
   (define emit-all (lambda x (apply-seq emit x)))
   (define cmd_tail ";\n")
-  (cond
-    [(null? p) (display "// null")]
-    [(not (list? p)) (display p)]
-    [(eq? (fst p) 'nop) (display "// nop\n")]
-    [(eq? (fst p) 'prog) 
-      (emit `(func "main" (list ()) (body ,(snd p))))]
-    [(eq? (fst p) 'body) 
+  (match p
+    ['() (display "")]
+    ['(nop) (display "")]
+    [`(prog ,seq) 
+      (emit `(func "main" (list ()) (body ,seq)))]
+    [`(body ,seq) 
       (begin 
         (emit "{\n") 
-        (apply-seq emit (snd p)) 
+        (apply-seq emit seq) 
         (emit "}\n"))]
-    [(eq? (fst p) 'func) 
-      (emit-all "_num_ " (snd p) (thd p) " " (frd p))]
-    [(eq? (fst p) 'callc) 
-      (emit-all (snd p) (thd p) cmd_tail)]
-    [(eq? (fst p) 'calle) 
-      (emit-all (snd p) (thd p))]
-    [(eq? (fst p) 'asgn) 
-      (emit-all (snd p) " = " (thd p) cmd_tail)]
-    [(eq? (fst p) 'decl) 
-      (emit-all "_num_ " (snd p) (thd p) cmd_tail)]
-    [(eq? (fst p) 'if)
-      (emit-all "if (" (snd p) ") " (thd p) "else\n" (frd p))]
-    [(eq? (fst p) 'while)
-      (emit-all "while (" (snd p) ") " (thd p))]
-    [(eq? (fst p) 'unop) 
-      (emit-all "(" (snd p) (thd p) ")")]
-    [(eq? (fst p) 'binop) 
-      (emit-all "(" (thd p) (snd p) (frd p) ")")]
-    [(eq? (fst p) 'deref) 
-      (emit-all "*((_num_*)" (snd p) ")")]
-    [(eq? (fst p) 'return)
-      (if [eq? 1 (length p)]
-          (emit-all "return 0" cmd_tail)
-          (emit-all "return " (snd p) cmd_tail))]
-    [(eq? (fst p) 'list) 
+    [`(func ,sig ,list-params ,body) 
+      (emit-all "_num_ " sig list-params " " body)]
+    [`(callc ,sig ,list-args) 
+      (emit-all sig list-args cmd_tail)]
+    [`(calle ,sig ,list-args) 
+      (emit-all sig list-args)]
+    [`(asgn ,var ,expr) 
+      (emit-all var " = " expr cmd_tail)]
+    [`(decl ,id ,tag) 
+      (emit-all "_num_ " id tag cmd_tail)]
+    [`(if ,cond-expr ,then-body ,else-body)
+      (emit-all "if (" cond-expr ") " then-body "else\n" else-body)]
+    [`(while ,cond-expr ,do-body)
+      (emit-all "while (" cond-expr ") " do-body)]
+    [`(unop ,op ,target) 
+      (emit-all "(" op target ")")]
+    [`(binop ,op ,arg1 ,arg2) 
+      (emit-all "(" arg1 op arg2 ")")]
+    [`(deref ,ptr) 
+      (emit-all "*((_num_*)" ptr ")")]
+    [`(return) 
+      (emit-all "return 0" cmd_tail)]
+    [`(return ,ret-expr) 
+      (emit-all "return " ret-expr cmd_tail)]
+    [`(list ,l) 
       (begin
-        (define l (snd p))
         (emit "(")
         (define (emit-list x)
           (cond
@@ -259,9 +260,8 @@
               (begin (emit-all (fst x) ", ") (emit-list (cdr x)))]))
         (emit-list l)
         (emit ")"))]
-    [(eq? (fst p) 'list-params) 
+    [`(list-params ,l) 
       (begin
-        (define l (snd p))
         (emit "(")
         (define (emit-list-params x)
           (cond
@@ -271,13 +271,15 @@
               (begin (emit-all "_num_ " (fst x) ", ") (emit-list-params (cdr x)))]))
         (emit-list-params l)
         (emit ")"))]
-    [(eq? (fst p) 'id) (apply-seq emit (cdr p))]
-    [(eq? (fst p) 'nat) (emit (snd p))]
-    [else (display "// Huh?\n")]))
+    [`(id ,id ,tag) (emit-all id tag)]
+    [`(nat ,num) (emit num)]
+    [else (display p)]))
 
 (define path (fst (vector->list (current-command-line-arguments))))
 (define presult (lnp path))
 (define vresult (car (scan-var presult)))
 (set! var-list (map (lambda (x) (cons 'decl (cdr x))) var-list))
 (define fresult (scan-func vresult))
-(define ret (for-each emit `(,@var-list ,@func-list ,fresult)))
+(define final `(,@var-list ,@func-list ,fresult))
+; (println final)
+(define ret (for-each emit final))

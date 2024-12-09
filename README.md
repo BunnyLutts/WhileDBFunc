@@ -56,7 +56,7 @@ make test_all
 
 to get a report of all tests in the `tests/` folder.
 
-To do single tests and verifications, you need to install `racket`, `clang` and a `racket` package `uuid` (bash:`raco install uuid`). 
+To do single tests and verifications, you need to install `racket` and `clang`. 
 Then enter the `nushell` environment
 
 ```bash

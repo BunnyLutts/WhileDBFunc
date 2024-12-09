@@ -1,9 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-typedef unsigned long long _num_;
-
-#define BUFFER 1024
+typedef signed long long _num_;
 
 _num_ read_int() {
   _num_ tmp;
@@ -16,8 +14,8 @@ _num_ read_char() {
 void write_int(_num_ input) {
   printf("%lld\n", input);
 }
-void write_char(char *str) {
-  printf("%s\n", str);
+void write_char(_num_ str) {
+  printf("%c\n", (int) str);
 }
 _num_ _my_malloc_(_num_ input) {
   return (_num_) malloc(input);
