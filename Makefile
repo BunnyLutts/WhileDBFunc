@@ -50,6 +50,7 @@ all: bin/main
 clean:
 	rm -rf build/*
 	rm -rf test_result.json
+	rm -rf w2c_output.c
 	rm -rf bin/*
 
 test_all:

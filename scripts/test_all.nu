@@ -1,4 +1,3 @@
-source test_one.nu;
 print "Start testing...";
 let files = ls tests | sort-by name | get name;
 print $"Find ($files | length) tests...";

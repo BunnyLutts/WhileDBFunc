@@ -45,52 +45,35 @@ You shall NEVER directly change the main branch or push the main branch.
 
 ## How to test
 
-Then, if you need to =to run auto tests, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). 
+If you need to run tests and verifications, please install [`nushell`](https://www.nushell.sh/zh-CN/book/installation.html). 
 If you use `npm`, you can simply run `make depend` to install nushell. 
+
 After install, you can run:
 
-```bash
+```nu
 make test_all
 ```
 
-This command will build a debug version and out put a json like `test_result` file.
+to get a report of all tests in the `tests/` folder.
 
-If you want to test on one test, you need to use `nu` as shell. Firstly import the function:
+To do single tests and verifications, you need to install `racket` and `clang`. 
+Then enter the `nushell` environment
 
 ```bash
 nu
-source scripts/test_one.nu
-```
+````
 
-Then prepare a debug version:
-
-```nu
-make MODE=DEBUG
-```
-
-Then use
+run this command
 
 ```nu
-test_one $file_name
+source scripts/utility.nu
 ```
 
-To get a json like output.
+We have two functions in `utility.nu`. `test_one` accept a test file path and output a report; `w2c` convert the test into a `C` file.
 
-## Cross Verification
+you can use them to test correctness.
 
-To ensure correctness, we need to use some method to simulate our results.
-
-Now the method is using `racket` to lex and parse `.src`, then convert it to `C` (or directly run it in `racket`)
-
-I must say, it's much easier to write a lexer & parser in functional lanuages!
-
-*Progress*
-
-- [x] lexer
-- [ ] parser
-- [ ] c-converter / interpreter
-
-`Racket` is a sibling of `Scheme`, so you should be familier with it.
+*Still unfinished*
 
 ## Language Specification
 
