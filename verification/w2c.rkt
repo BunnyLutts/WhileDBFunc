@@ -222,7 +222,7 @@
       (begin 
         (emit "{\n") 
         (apply-seq emit (snd p)) 
-        (emit "};\n"))]
+        (emit "}\n"))]
     [(eq? (fst p) 'func) 
       (emit-all "_num_ " (snd p) (thd p) " " (frd p))]
     [(eq? (fst p) 'callc) 
@@ -233,6 +233,10 @@
       (emit-all (snd p) " = " (thd p) cmd_tail)]
     [(eq? (fst p) 'decl) 
       (emit-all "_num_ " (snd p) (thd p) cmd_tail)]
+    [(eq? (fst p) 'if)
+      (emit-all "if (" (snd p) ") " (thd p) "else\n" (frd p))]
+    [(eq? (fst p) 'while)
+      (emit-all "while (" (snd p) ") " (thd p))]
     [(eq? (fst p) 'unop) 
       (emit-all "(" (snd p) (thd p) ")")]
     [(eq? (fst p) 'binop) 

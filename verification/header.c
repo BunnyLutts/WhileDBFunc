@@ -14,10 +14,10 @@ _num_ read_char() {
   return (_num_) getchar();
 }
 void write_int(_num_ input) {
-  printf("%lld", input);
+  printf("%lld\n", input);
 }
 void write_char(char *str) {
-  printf("%s", str);
+  printf("%s\n", str);
 }
 _num_ _my_malloc_(_num_ input) {
   return (_num_) malloc(input);
