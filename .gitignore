@@ -3,3 +3,5 @@ parser.output
 build/*
 test_result.json
 bin/main
+w2c_output.c
+a.out
