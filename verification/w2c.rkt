@@ -91,6 +91,7 @@
         [(id left-paren list_expr right-paren) (list 'call $1 (list 'list $3))]]
       
       [cmdseq
+        [() '()]
         [(cmd) (list $1)]
         [(cmd semicol cmdseq) (cons $1 $3)]]
       
@@ -208,7 +209,7 @@
 
 (define (scan-func p)
   (match p 
-    [`(func ,res) 
+    [`(func ,@res) 
       (begin (set! func-list (cons p func-list)) '(nop))]
     [else 
       (if [list? p] (map scan-func p) p)]))
@@ -228,6 +229,8 @@
         (emit "}\n"))]
     [`(func ,sig ,list-params ,body) 
       (emit-all "_num_ " sig list-params " " body)]
+    [`(func-sig ,sig ,list-params) 
+      (emit-all "_num_ " sig list-params cmd_tail)]
     [`(callc ,sig ,list-args) 
       (emit-all sig list-args cmd_tail)]
     [`(calle ,sig ,list-args) 
@@ -281,6 +284,7 @@
 (define vresult (car (scan-var presult)))
 (set! var-list (map (lambda (x) (cons 'decl (cdr x))) var-list))
 (define fresult (scan-func vresult))
-(define final `(,@var-list ,@func-list ,fresult))
+(define func-sig* (map (lambda (x) (match x [`(func ,sig ,list-params ,body) `(func-sig ,sig ,list-params)] [else x])) func-list))
+(define final `(,@var-list ,@func-sig* ,@func-list ,fresult))
 ; (println final)
 (define ret (for-each emit final))

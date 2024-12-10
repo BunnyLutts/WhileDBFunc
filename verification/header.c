@@ -20,5 +20,9 @@ void write_char(_num_ str) {
 _num_ _my_malloc_(_num_ input) {
   return (_num_) malloc(input);
 }
+void _my_free_(_num_ input) {
+  free((void *) input);
+}
 
 #define malloc _my_malloc_
+#define free _my_free_
