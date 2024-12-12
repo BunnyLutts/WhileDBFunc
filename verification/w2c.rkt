@@ -91,6 +91,7 @@
         [(id left-paren list_expr right-paren) (list 'call $1 (list 'list $3))]]
       
       [cmdseq
+        [() '()]
         [(cmd) (list $1)]
         [(cmd semicol cmdseq) (cons $1 $3)]]
       
@@ -124,7 +125,7 @@
         [(expr gt expr) (list 'binop ">" $1 $3)]
         [(expr le expr) (list 'binop "<=" $1 $3)]
         [(expr ge expr) (list 'binop ">=" $1 $3)]
-        [(expr eq expr) (list 'binop "=" $1 $3)]
+        [(expr eq expr) (list 'binop "==" $1 $3)]
         [(expr neq expr) (list 'binop "!=" $1 $3)]
         [(expr and expr) (list 'binop "&&" $1 $3)]
         [(expr or expr) (list 'binop "||" $1 $3)]]
@@ -192,13 +193,14 @@
             [`(func ,sig (list-params ,params) ,body)
               (begin  (define tmp-var-list '())
                       (map (lambda (x) (set! tmp-var-list (cons `(id ,(snd x) ,(key-gen)) tmp-var-list))) params)
-                          (set! var-list (append tmp-var-list var-list))
-                          (set! t (append tmp-var-list t))
-                          (set! t (replace-list t tmp-var-list))
-                          (define lpr (replace-list params t))
-                          (define nxt (scan-var-core (cons body t)))
-                          (set! p `(func ,(snd p) (list-params ,lpr) ,(car nxt)))
-                          (cons p (cdr nxt)))]
+                      (set! var-list (append tmp-var-list var-list))
+                      (define old_t t)
+                      (set! t (append tmp-var-list t))
+                      (set! t (replace-list t tmp-var-list))
+                      (define lpr (replace-list params t))
+                      (define nxt (scan-var-core (cons body t)))
+                      (set! p `(func ,(snd p) (list-params ,lpr) ,(car nxt)))
+                      (cons p old_t))]
             [else 
               (begin  (set! p (replace-list p t))
                       (applier scan-var-core p t))]))))
@@ -227,6 +229,8 @@
         (emit "}\n"))]
     [`(func ,sig ,list-params ,body) 
       (emit-all "_num_ " sig list-params " " body)]
+    [`(func-sig ,sig ,list-params) 
+      (emit-all "_num_ " sig list-params cmd_tail)]
     [`(callc ,sig ,list-args) 
       (emit-all sig list-args cmd_tail)]
     [`(calle ,sig ,list-args) 
@@ -280,6 +284,7 @@
 (define vresult (car (scan-var presult)))
 (set! var-list (map (lambda (x) (cons 'decl (cdr x))) var-list))
 (define fresult (scan-func vresult))
-(define final `(,@var-list ,@func-list ,fresult))
+(define func-sig* (map (lambda (x) (match x [`(func ,sig ,list-params ,body) `(func-sig ,sig ,list-params)] [else x])) func-list))
+(define final `(,@var-list ,@func-sig* ,@func-list ,fresult))
 ; (println final)
 (define ret (for-each emit final))

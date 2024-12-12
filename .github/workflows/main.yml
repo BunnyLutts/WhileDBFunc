@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
-      run: sudo apt-get install pkg-config libssl-dev build-essential && make depend
+      run: sudo apt-get install pkg-config libssl-dev build-essential racket && make depend
     - name: Make
       run: mkdir build && make clean && make MODE=DEBUG
     - name: Test
