@@ -1,0 +1,7 @@
+var raw;
+var ptr;
+raw = 1;
+ptr = malloc(8);
+*ptr = 12;
+raw = *ptr;
+write_int(raw)

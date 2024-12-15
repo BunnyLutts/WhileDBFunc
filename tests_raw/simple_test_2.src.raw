@@ -1,0 +1,20 @@
+var a;
+var b;
+var c;
+a = 123;
+b = 35;
+c = 134;
+if a then {
+  a = c;
+  b = a * c
+} else {
+  c = a;
+  c = b * a;
+  if (a <= a) then {
+    a = a+a;
+    b = c * (c + c + -c)
+  } else {
+    b = a*c
+  }
+};
+write_int(a*b*c)

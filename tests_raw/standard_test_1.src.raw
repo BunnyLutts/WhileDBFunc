@@ -1,7 +1,3 @@
-__INPUT_BEGIN__
-478
-__INPUT_END__
-__SRC_BEGIN__
 var x;
 var l;
 var h;
@@ -16,4 +12,3 @@ then { l = mid }
 else { h = mid }
 };
 write_int(l)
-__SRC_END__

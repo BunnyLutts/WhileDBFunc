@@ -1,3 +1,13 @@
+__INPUT_BEGIN__
+34
+563
+346
+2
+7568
+-234
+0
+__INPUT_END__
+__SRC_BEGIN__
 var n;
 var s;
 s = 0;
@@ -7,3 +17,4 @@ n = read_int();
 s = s + n
 };
 write_int(s)
+__SRC_END__
