@@ -224,6 +224,12 @@
           (cons `(func ,sig (list-params ,params) (locals ,(cdr nxt)) ,(car nxt)) '()))]
       [else (if [list? p] (applier find-locals p t) (cons p t))])))
 
+(define (add-defer p d)
+  (match p
+    [`(return) `(return ,d)]
+    [`(return ,e) `(return ,d ,e)]
+    [else (if [list? p] (map (lambda (x) (add-defer x d)) p) p)]))
+
 (define (apply-locals p)
   (match p
     [`(func ,sig (list-params ,params) (locals ,locals) (body ,seq))
@@ -231,9 +237,15 @@
              (define temp-decls (map (lambda (x) `(decl ,@(cdr x))) temp-locals))
              (define pre-asgn (map (lambda (x y) `(asgn ,x ,y)) temp-locals locals))
              (define post-asgn (map (lambda (x y) `(asgn ,x ,y)) locals temp-locals))
-             (define new-seq `(,@temp-decls ,@pre-asgn ,@seq ,@post-asgn))
+             (define defer `(defer ,post-asgn))
+             (define new-seq `(,@temp-decls ,@pre-asgn ,@(add-defer seq defer) ,@post-asgn))
              `(func ,sig (list-params ,params) (body ,new-seq)))]
     [else p]))
+
+(define (remove-decl p)
+  (match p
+    [`(decl ,@res) '(nop)]
+    [else (if [list? p] (map remove-decl p) p)]))
 
 (define (emit p)
   (define emit-all (lambda x (apply-seq emit x)))
@@ -248,6 +260,7 @@
         (emit "{\n") 
         (apply-seq emit seq) 
         (emit "}\n"))]
+    [`(defer ,seq) (apply-seq emit seq)]
     [`(func ,sig ,list-params ,body) 
       (emit-all "_num_ " sig list-params " " body)]
     [`(func-sig ,sig ,list-params) 
@@ -270,10 +283,10 @@
       (emit-all "(" arg1 op arg2 ")")]
     [`(deref ,ptr) 
       (emit-all "*((_num_*)" ptr ")")]
-    [`(return) 
-      (emit-all "return 0" cmd_tail)]
-    [`(return ,ret-expr) 
-      (emit-all "return " ret-expr cmd_tail)]
+    [`(return ,defer) 
+      (emit-all defer "return 0" cmd_tail)]
+    [`(return ,defer ,ret-expr) 
+      (emit-all defer "return " ret-expr cmd_tail)]
     [`(list ,l) 
       (begin
         (emit "(")
@@ -311,6 +324,7 @@
 ; (println func-list)
 (set! func-list (map apply-locals func-list))
 ; (println func-list)
+(set! fresult (remove-decl fresult))
 (define func-sig* (map (lambda (x) (match x [`(func ,sig ,list-params ,body) `(func-sig ,sig ,list-params)] [else x])) func-list))
 (define final `(,@(reverse var-list) ,@(reverse func-sig*) ,@(reverse func-list) ,fresult))
 ; (println final)
