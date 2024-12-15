@@ -4,10 +4,6 @@
 (require parser-tools/yacc)
 (require racket/match)
 
-(define counter 0)
-
-(define key-gen (lambda () (set! counter (+ counter 1)) (string-append "_" (number->string counter))))
-
 (define (lexer-wraper lxr input)
   (let ([cur (lxr input)])
     (if [eq? cur 'eof]
@@ -142,7 +138,6 @@
 
 (define (lnp f) (let ([i (open-input-file f)]) (psr (lambda () (lxr i)))))
 
-
 (define (fst x) (car x))
 (define (snd x) (car (cdr x)))
 (define (thd x) (car (cdr (cdr x))))
@@ -154,58 +149,16 @@
         seq
         (begin (f (car seq)) (apply-seq f (cdr seq))))))
 
-; A -> B -> B
-(define (replace pack p)
-  (if [and (list? p) (not (null? p))]
-      (if [eq? (fst p) (fst pack)]
-          (if [equal? (snd p) (snd pack)] pack p)
-          (map (lambda (x) (replace pack x)) p))
-      p))
-
-; B -> list A -> B
-(define (replace-list p pack*) (foldl replace p pack*))
-
 (define var-list '())
 
 (define func-list '())
 
-; A*B -> list A -> B -> (list A) * b
-(define (applier f al b)
-  (if [null? al]
-      (cons al b)
-      (let* ([had (f (cons (car al) b))]
-             [tal (applier f (cdr al) (cdr had))])
-            (cons (cons (car had) (car tal)) (cdr tal)))))
+(define (scan-var p)
+  (match p 
+    [`(decl ,@res) 
+      (begin (set! var-list (cons p var-list)) '(nop))]
+    [else p]))
 
-; A*B -> A*B
-(define (scan-var-core pack)
-  (let ([p (car pack)]
-        [t (cdr pack)])
-      (if [or (not (list? p)) (null? p)]
-          pack
-          (match p
-            [`(decl ,var)
-              (begin  (define bind `(id ,var ,(key-gen)))
-                      (set! var-list (cons bind var-list))
-                      (set! t (cons bind t))
-                      (set! t (replace bind t))
-                      (cons `(decl ,@(cdr bind)) t))]
-            [`(func ,sig (list-params ,params) ,body)
-              (begin  (define tmp-var-list '())
-                      (map (lambda (x) (set! tmp-var-list (cons `(id ,(snd x) ,(key-gen)) tmp-var-list))) params)
-                      ; (set! var-list (append tmp-var-list var-list))
-                      (define old_t t)
-                      (set! t (append tmp-var-list t))
-                      (set! t (replace-list t tmp-var-list))
-                      (define lpr (replace-list params t))
-                      (define nxt (scan-var-core (cons body t)))
-                      (set! p `(func ,(snd p) (list-params ,lpr) ,(car nxt)))
-                      (cons p old_t))]
-            [else 
-              (begin  (set! p (replace-list p t))
-                      (applier scan-var-core p t))]))))
-
-(define (scan-var x) (scan-var-core (cons x '())))
 
 (define (scan-func p)
   (match p 
@@ -214,38 +167,6 @@
     [else 
       (if [list? p] (map scan-func p) p)]))
 
-(define (find-locals pack)
-  (let ([p (car pack)]
-        [t (cdr pack)])
-    (match p
-      [`(decl ,@res) (cons '(nop) `((id ,@res) ,@t))]
-      [`(func ,sig (list-params ,params) ,body)
-        (begin (define nxt (applier find-locals body '()))
-          (cons `(func ,sig (list-params ,params) (locals ,(cdr nxt)) ,(car nxt)) '()))]
-      [else (if [list? p] (applier find-locals p t) (cons p t))])))
-
-(define (add-defer p d)
-  (match p
-    [`(return) `(return ,d)]
-    [`(return ,e) `(return ,d ,e)]
-    [else (if [list? p] (map (lambda (x) (add-defer x d)) p) p)]))
-
-(define (apply-locals p)
-  (match p
-    [`(func ,sig (list-params ,params) (locals ,locals) (body ,seq))
-      (begin (define temp-locals (map (lambda (x) `(,@x "_tmp_")) locals))
-             (define temp-decls (map (lambda (x) `(decl ,@(cdr x))) temp-locals))
-             (define pre-asgn (map (lambda (x y) `(asgn ,x ,y)) temp-locals locals))
-             (define post-asgn (map (lambda (x y) `(asgn ,x ,y)) locals temp-locals))
-             (define defer `(defer ,post-asgn))
-             (define new-seq `(,@temp-decls ,@pre-asgn ,@(add-defer seq defer) ,@post-asgn))
-             `(func ,sig (list-params ,params) (body ,new-seq)))]
-    [else p]))
-
-(define (remove-decl p)
-  (match p
-    [`(decl ,@res) '(nop)]
-    [else (if [list? p] (map remove-decl p) p)]))
 
 (define (emit p)
   (define emit-all (lambda x (apply-seq emit x)))
@@ -260,7 +181,6 @@
         (emit "{\n") 
         (apply-seq emit seq) 
         (emit "}\n"))]
-    [`(defer ,seq) (apply-seq emit seq)]
     [`(func ,sig ,list-params ,body) 
       (emit-all "_num_ " sig list-params " " body)]
     [`(func-sig ,sig ,list-params) 
@@ -283,10 +203,10 @@
       (emit-all "(" arg1 op arg2 ")")]
     [`(deref ,ptr) 
       (emit-all "*((_num_*)" ptr ")")]
-    [`(return ,defer) 
-      (emit-all defer "return 0" cmd_tail)]
-    [`(return ,defer ,ret-expr) 
-      (emit-all defer "return " ret-expr cmd_tail)]
+    [`(return ) 
+      (emit-all "return 0" cmd_tail)]
+    [`(return ,ret-expr) 
+      (emit-all "return " ret-expr cmd_tail)]
     [`(list ,l) 
       (begin
         (emit "(")
@@ -316,15 +236,9 @@
 
 (define path (fst (vector->list (current-command-line-arguments))))
 (define presult (lnp path))
-(define vresult (car (scan-var presult)))
+(define vresult (list 'prog (map scan-var (snd presult))))
 (set! var-list (map (lambda (x) (cons 'decl (cdr x))) var-list))
 (define fresult (scan-func vresult))
-; (println func-list)
-(set! func-list (car (find-locals (cons func-list '()))))
-; (println func-list)
-(set! func-list (map apply-locals func-list))
-; (println func-list)
-(set! fresult (remove-decl fresult))
 (define func-sig* (map (lambda (x) (match x [`(func ,sig ,list-params ,body) `(func-sig ,sig ,list-params)] [else x])) func-list))
 (define final `(,@(reverse var-list) ,@(reverse func-sig*) ,@(reverse func-list) ,fresult))
 ; (println final)
