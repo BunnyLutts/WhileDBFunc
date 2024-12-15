@@ -201,6 +201,11 @@
       (emit-all "(" op target ")")]
     [`(binop ,op ,arg1 ,arg2) 
       (emit-all "(" arg1 op arg2 ")")]
+    [`(deref (binop "+" (id ,@res) (nat ,offset)))
+      #:when (= 0 (modulo offset 8))
+      (emit-all "(" "(_num_ *)" `(id ,@res) ")" "[" (/ offset 8) "]")]
+    [`(deref (binop "+" (id ,@res) (binop "*" ,offset (nat 8))))
+      (emit-all "(" "(_num_ *)" `(id ,@res) ")" "[" offset "]")]
     [`(deref ,ptr) 
       (emit-all "*((_num_*)" ptr ")")]
     [`(return ) 
