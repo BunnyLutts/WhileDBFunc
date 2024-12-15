@@ -59,7 +59,7 @@
     ["||" (token-or)]
     ["!" (token-not)]
     ["," (token-comma)]
-    [(repetition 1 +inf.0 (char-set " \n")) (lxr input-port)]))
+    [(repetition 1 +inf.0 (char-set " \n\t\r")) (lxr input-port)]))
 
 (define psr
   (parser
