@@ -3,7 +3,7 @@ print "Start testing...";
 let files = ls tests | sort-by name | get name;
 print $"Find ($files | length) tests...";
 let raw = $files | each {|path| open $path};
-let seperated = $raw | parse "!INPUT:\n{input}!SRC:\n{src}";
+let seperated = $raw | parse "!INPUT:{input}!SRC:\n{src}";
 let combined = $files | wrap test | (merge $seperated);
 let result = $combined | each {|pack| print $"Testing: ($pack.test)"; $pack.src | save -f temp.src; $pack.input | ./bin/main temp.src};
 rm temp.src;
