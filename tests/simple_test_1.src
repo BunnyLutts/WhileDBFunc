@@ -1,3 +1,5 @@
+!INPUT:
+!SRC:
 var fibb_1;
 var fibb_2;
 fibb_1 = 1;

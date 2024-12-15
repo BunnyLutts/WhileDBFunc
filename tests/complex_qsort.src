@@ -1,3 +1,5 @@
+!INPUT:
+!SRC:
 var num_size;
 num_size = 8;
 var length;

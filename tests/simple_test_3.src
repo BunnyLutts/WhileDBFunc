@@ -1,3 +1,5 @@
+!INPUT:
+!SRC:
 var raw;
 var ptr;
 raw = 1;
