@@ -321,7 +321,9 @@ Primitive *eval_ri(Stack *stack, union ExprContent *expr) {
     // Implement ri evaluation
     Primitive *ret = NULL;
     Primitive read_num;
-    scanf("%lld", &read_num);
+    if (scanf("%lld", &read_num) != 1) {
+        fault("Error in read_int()");
+    }
     ret = new_primitive(read_num);
     return ret;
 }
@@ -330,7 +332,9 @@ Primitive *eval_rc(Stack *stack, union ExprContent *expr) {
     // Implement rc evaluation
     Primitive *ret = NULL;
     char read_char;
-    scanf("%c", &read_char);
+    if (scanf("%c", &read_char)) {
+        fault("Error in read_char()");
+    }
     ret = new_primitive(read_char);
     return ret;
 }

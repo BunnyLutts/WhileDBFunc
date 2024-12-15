@@ -1,0 +1,14 @@
+var x;
+var l;
+var h;
+var mid;
+x = read_int();
+l = 0;
+h = x + 1;
+while (l + 1 < h) do {
+mid = (l + h) / 2;
+if (mid * mid <= x)
+then { l = mid }
+else { h = mid }
+};
+write_int(l)
