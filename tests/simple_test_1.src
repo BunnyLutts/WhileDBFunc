@@ -1,3 +1,7 @@
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 var fibb_1;
 var fibb_2;
 fibb_1 = 1;
@@ -12,3 +16,4 @@ while n != 0 do {
   n = n - 1
 };
 write_int(fibb_2)
+__SRC_END__

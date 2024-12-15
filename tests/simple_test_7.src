@@ -1,3 +1,7 @@
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 var p;
 var q;
 p = malloc(8);
@@ -6,3 +10,4 @@ q = malloc(8);
 *q = 123;
 write_int(*p);
 write_int(*q)
+__SRC_END__

@@ -1,3 +1,7 @@
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 var width;
 var height;
 var array;
@@ -47,3 +51,4 @@ while i <= width do {
   i = i+1
 };
 write_int(*get(1,1))
+__SRC_END__

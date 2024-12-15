@@ -1,3 +1,7 @@
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 var a;
 var b;
 var p;
@@ -26,3 +30,4 @@ func exgcd(a, b, p, q) {
 write_int(exgcd(a, b, p, q));
 write_int(*p);
 write_int(*q)
+__SRC_END__
