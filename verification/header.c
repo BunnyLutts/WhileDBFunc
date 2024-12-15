@@ -9,7 +9,9 @@ _num_ read_int() {
   return tmp;
 }
 _num_ read_char() {
-  return (_num_) getchar();
+  char tmp;
+  scanf(" %c", &tmp);
+  return (_num_)tmp;
 }
 void write_int(_num_ input) {
   printf("%lld\n", input);

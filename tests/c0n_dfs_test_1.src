@@ -1,0 +1,92 @@
+func xor(a,b) {
+    if (a + b == 0) then {
+        return 0
+    } else {
+        if (a + b == 1) then {
+            return 1
+        } else {
+            var THIS_PROBLEM_IS_FROM_ACMOJ_1693;
+            var VOID
+        }
+    };
+    return 0
+};
+func min(a,b) {
+    if (a < b) then {
+        return a
+    } else {
+        var VOID_SOL_FROM_ACMOJ_1693
+    };
+    return b
+};
+var a;
+var size_of_int;
+size_of_int = 8;
+a = malloc(15 * size_of_int);
+func change(x) {
+
+    if (x - 3 >= 1) then {
+        *(a + (x - 3) * size_of_int) = xor(*(a + (x - 3) * size_of_int), 1)
+    } else {
+        var VOID_SOL_FROM_ACMOJ_1693
+    };
+
+    if (x - 1 >= 1 && x % 3 != 1) then {
+        *(a + (x - 1) * size_of_int) = xor(*(a + (x - 1) * size_of_int), 1)
+    } else {
+        var VOID_SOL_FROM_ACMOJ_1693
+    };
+
+    *(a + x * size_of_int) = xor(*(a + x * size_of_int), 1);
+
+    if (x + 3 <= 9) then {
+        *(a + (x + 3) * size_of_int) = xor(*(a + (x + 3) * size_of_int), 1)
+    } else {
+        var VOID_SOL_FROM_ACMOJ_1693
+    };
+
+    if (x + 1 <= 9 && x % 3 != 0) then {
+        *(a + (x + 1) * size_of_int) = xor(*(a + (x + 1) * size_of_int), 1)
+    } else {
+        var VOID_SOL_FROM_ACMOJ_1693
+    }
+
+};
+func dfs(x) {
+    var ans;
+    ans = 0;
+    if (x == 10) then {
+        var flag;
+        flag = 1;
+        var i;
+        i = 1;
+        while (i <= 9) do {
+            if (*(a + i * size_of_int) != 1) then {
+                flag = 0
+            } else {
+                var VOID_SOL_FROM_ACMOJ_1693
+            };
+            i = i + 1
+        };
+        if (flag == 1) then {
+            return 0
+        } else {
+            return 1000000
+        }
+    } else {
+        var VOID_SOL_FROM_ACMOJ_1693
+    };
+    ans = dfs(x + 1);
+
+    change(x);
+    ans = min(ans, dfs(x + 1) + 1);
+    change(x);
+    return ans
+};
+var i;
+i = 1;
+while (i <= 9) do {
+    *(a + (i) * size_of_int) = read_int();
+    i = i + 1
+};
+write_int(dfs(1))

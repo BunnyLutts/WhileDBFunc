@@ -1,0 +1,12 @@
+var x;
+var n;
+var flag;
+x = read_int();
+n = 2;
+flag = 1;
+while (n * n <= x && flag) do {
+if (x % n == 0)
+then { flag = 0 }
+else { n = n + 1 }
+};
+write_int(flag)

@@ -1,0 +1,9 @@
+var n;
+var s;
+s = 0;
+n = 1;
+while (n != 0) do {
+n = read_int();
+s = s + n
+};
+write_int(s)
