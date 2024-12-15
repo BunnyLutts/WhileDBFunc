@@ -1,5 +1,7 @@
 __INPUT_BEGIN__
-
+0 1 1
+1 0 0
+1 0 1
 __INPUT_END__
 __SRC_BEGIN__
 func xor(a,b) {
