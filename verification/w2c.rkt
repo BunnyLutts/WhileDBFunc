@@ -189,11 +189,11 @@
                       (set! var-list (cons bind var-list))
                       (set! t (cons bind t))
                       (set! t (replace bind t))
-                      (cons '(nop) t))]
+                      (cons `(decl ,@(cdr bind)) t))]
             [`(func ,sig (list-params ,params) ,body)
               (begin  (define tmp-var-list '())
                       (map (lambda (x) (set! tmp-var-list (cons `(id ,(snd x) ,(key-gen)) tmp-var-list))) params)
-                      (set! var-list (append tmp-var-list var-list))
+                      ; (set! var-list (append tmp-var-list var-list))
                       (define old_t t)
                       (set! t (append tmp-var-list t))
                       (set! t (replace-list t tmp-var-list))
@@ -213,6 +213,27 @@
       (begin (set! func-list (cons p func-list)) '(nop))]
     [else 
       (if [list? p] (map scan-func p) p)]))
+
+(define (find-locals pack)
+  (let ([p (car pack)]
+        [t (cdr pack)])
+    (match p
+      [`(decl ,@res) (cons '(nop) `((id ,@res) ,@t))]
+      [`(func ,sig (list-params ,params) ,body)
+        (begin (define nxt (applier find-locals body '()))
+          (cons `(func ,sig (list-params ,params) (locals ,(cdr nxt)) ,(car nxt)) '()))]
+      [else (if [list? p] (applier find-locals p t) (cons p t))])))
+
+(define (apply-locals p)
+  (match p
+    [`(func ,sig (list-params ,params) (locals ,locals) (body ,seq))
+      (begin (define temp-locals (map (lambda (x) `(,@x "_tmp_")) locals))
+             (define temp-decls (map (lambda (x) `(decl ,@(cdr x))) temp-locals))
+             (define pre-asgn (map (lambda (x y) `(asgn ,x ,y)) temp-locals locals))
+             (define post-asgn (map (lambda (x y) `(asgn ,x ,y)) locals temp-locals))
+             (define new-seq `(,@temp-decls ,@pre-asgn ,@seq ,@post-asgn))
+             `(func ,sig (list-params ,params) (body ,new-seq)))]
+    [else p]))
 
 (define (emit p)
   (define emit-all (lambda x (apply-seq emit x)))
@@ -237,8 +258,8 @@
       (emit-all sig list-args)]
     [`(asgn ,var ,expr) 
       (emit-all var " = " expr cmd_tail)]
-    [`(decl ,id ,tag) 
-      (emit-all "_num_ " id tag cmd_tail)]
+    [`(decl ,@res) 
+      (apply-seq emit `("_num_ " ,@res ,cmd_tail))]
     [`(if ,cond-expr ,then-body ,else-body)
       (emit-all "if (" cond-expr ") " then-body "else\n" else-body)]
     [`(while ,cond-expr ,do-body)
@@ -275,7 +296,8 @@
               (begin (emit-all "_num_ " (fst x) ", ") (emit-list-params (cdr x)))]))
         (emit-list-params l)
         (emit ")"))]
-    [`(id ,id ,tag) (emit-all id tag)]
+    [`(id ,@res)
+      (apply-seq emit res)]
     [`(nat ,num) (emit num)]
     [else (display p)]))
 
@@ -284,6 +306,11 @@
 (define vresult (car (scan-var presult)))
 (set! var-list (map (lambda (x) (cons 'decl (cdr x))) var-list))
 (define fresult (scan-func vresult))
+; (println func-list)
+(set! func-list (car (find-locals (cons func-list '()))))
+; (println func-list)
+(set! func-list (map apply-locals func-list))
+; (println func-list)
 (define func-sig* (map (lambda (x) (match x [`(func ,sig ,list-params ,body) `(func-sig ,sig ,list-params)] [else x])) func-list))
 (define final `(,@(reverse var-list) ,@(reverse func-sig*) ,@(reverse func-list) ,fresult))
 ; (println final)
