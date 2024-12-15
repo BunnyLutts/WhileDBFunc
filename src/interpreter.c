@@ -200,9 +200,7 @@ Primitive *exec_retval(Stack *stack, union CmdContent *body, size_t *counter) {
 }
 
 Primitive *exec_nop(Stack *stack, union CmdContent *body, size_t *counter) {
-    Primitive *p = NEW(Primitive);
-    *p = 0;
-    return p;
+    return NULL;
 }
 
 Primitive *eval(Stack *stack, struct expr* expr) {
