@@ -1,0 +1,34 @@
+var num_size;
+num_size = 8;
+var length;
+length = 15;
+var arr;
+arr = malloc(num_size*length);
+func get(list, index) { return *(list + index * num_size) };
+func asgn(list, index, val) { *(list + index * num_size) = val };
+func quick_sort(s, l, r) {
+  var i;
+  var j;
+  var x;
+  i = l;
+  j = r;
+  x = get(s, i);
+  while i < j do {
+    while(i < j && get(s, j) >= x) do {j = j - 1};
+    asgn(s, i, get(s, j));
+    while(i < j && get(s, i) <= x) do {i = i + 1};
+    asgn(s, j, get(s, i))
+  };
+  asgn(s, i, x);
+  if (i - 1 > l) then {quick_sort(s, l, i - 1)} else {var _};
+  if (i + 1 < r) then {quick_sort(s, i + 1, r)} else {var _};
+  return
+};
+var j;
+j = 13;
+var i;
+i = 0;
+while i < length do {asgn(arr, i, j); j = (j * 13) % 17; i = i + 1};
+quick_sort(arr, 0, length - 1);
+i = 0;
+while i < length do {write_int(get(arr, i)); i = i + 1}
