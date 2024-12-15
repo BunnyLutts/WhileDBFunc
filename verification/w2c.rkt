@@ -91,11 +91,11 @@
         [(id left-paren list_expr right-paren) (list 'call $1 (list 'list $3))]]
       
       [cmdseq
-        [() '()]
         [(cmd) (list $1)]
         [(cmd semicol cmdseq) (cons $1 $3)]]
       
       [cmd 
+        [() '(nop)]
         [(var id) (list 'decl $2)]
         [(expr asgn expr) (list 'asgn $1 $3)]
         [(if expr then body else body) (list 'if $2 $4 $6)]

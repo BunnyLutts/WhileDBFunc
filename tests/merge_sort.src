@@ -97,5 +97,5 @@ merge_sort(ptr, 0, n - 1);
 i = 0;
 while i < n do {
     write_int(*(ptr + i*8));
-    i = i + 1
-}
+    i = i + 1;;;;
+};;;;

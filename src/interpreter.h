@@ -85,6 +85,7 @@ Primitive *exec_fdecl(Stack *stack, union CmdContent *body, size_t *counter);
 Primitive *exec_fcallc(Stack *stack, union CmdContent *body, size_t *counter);
 Primitive *exec_ret(Stack *stack, union CmdContent *body, size_t *counter);
 Primitive *exec_retval(Stack *stack, union CmdContent *body, size_t *counter);
+Primitive *exec_nop(Stack *stack, union CmdContent *body, size_t *counter);
 
 Primitive *eval_const(Stack *stack, union ExprContent *expr);
 Primitive *eval_var(Stack *stack, union ExprContent *expr);

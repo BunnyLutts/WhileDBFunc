@@ -86,8 +86,7 @@ num       = 0|[1-9][0-9]*
 prog      = cmd_seq
 block     = "{" cmd_seq "}"
 
-cmd_seq   = empty
-          | (cmd ";")* cmd
+cmd_seq   = (cmd ";")* cmd
 
 cmd       = cmd_decl
           | cmd_asgn
@@ -96,6 +95,7 @@ cmd       = cmd_decl
           | cmd_fdecl
           | cmd_fcall
           | cmd_ret
+          | cmd_nop
 
 cmd_decl  = "var" ident
 cmd_asgn  = lval "=" expr
@@ -104,6 +104,7 @@ cmd_while = "while" expr "do" block
 cmd_fdecl = "func" ident "(" id_list ")" block
 cmd_fcall = fcall
 cmd_ret   = "return" (expr)+
+cmd_nop   = empty
 
 fcall     = ident "(" expr_list ")"
 
