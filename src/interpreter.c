@@ -332,7 +332,7 @@ Primitive *eval_rc(Stack *stack, union ExprContent *expr) {
     // Implement rc evaluation
     Primitive *ret = NULL;
     char read_char;
-    if (scanf("%c", &read_char)) {
+    if (scanf("%c", &read_char) != 1) {
         fault("Error in read_char()");
     }
     ret = new_primitive(read_char);
