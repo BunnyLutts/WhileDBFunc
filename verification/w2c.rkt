@@ -285,6 +285,6 @@
 (set! var-list (map (lambda (x) (cons 'decl (cdr x))) var-list))
 (define fresult (scan-func vresult))
 (define func-sig* (map (lambda (x) (match x [`(func ,sig ,list-params ,body) `(func-sig ,sig ,list-params)] [else x])) func-list))
-(define final `(,@var-list ,@func-sig* ,@func-list ,fresult))
+(define final `(,@(reverse var-list) ,@(reverse func-sig*) ,@(reverse func-list) ,fresult))
 ; (println final)
 (define ret (for-each emit final))
