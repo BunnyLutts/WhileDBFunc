@@ -179,6 +179,12 @@ struct cmd * TRetVal(struct expr * val) {
   return res;
 }
 
+struct cmd * TNop() {
+  struct cmd * res = new_cmd_ptr();
+  res -> t = T_NOP;
+  return res;
+}
+
 struct list * TParams(struct expr * head, struct list * tails) {
   struct list * res = new_list_ptr();
   res -> t = T_PARAMS;
@@ -359,6 +365,9 @@ void print_cmd(struct cmd * c) {
     printf("RETURN(");
     print_expr(c -> d.RETVAL.val);
     printf(")");
+    break;
+  case T_NOP:
+    printf("NOP");
     break;
   }
 }

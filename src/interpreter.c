@@ -79,6 +79,9 @@ Primitive *exec(Stack *stack, struct cmd *body, size_t *counter) {
         case T_RETVAL: {
             return exec_retval(stack, &body->d, counter);
         }
+        case T_NOP: {
+            return exec_nop(stack, &body->d, counter);
+        }
     }
     return NULL;
 }
@@ -194,6 +197,12 @@ Primitive *exec_ret(Stack *stack, union CmdContent *body, size_t *counter) {
 
 Primitive *exec_retval(Stack *stack, union CmdContent *body, size_t *counter) {
     return eval(stack, body->RETVAL.val);
+}
+
+Primitive *exec_nop(Stack *stack, union CmdContent *body, size_t *counter) {
+    Primitive *p = NEW(Primitive);
+    *p = 0;
+    return p;
 }
 
 Primitive *eval(Stack *stack, struct expr* expr) {

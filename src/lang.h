@@ -49,6 +49,7 @@ enum CmdType {
   T_FCALLC, // Function Call as Cmd
   T_RET,    // Return
   T_RETVAL, // Return with Value
+  T_NOP     // Nothing
 };
 
 enum ListType {
@@ -85,6 +86,7 @@ struct cmd {
     struct {char * fname; struct list * params; } FCALLC; // Function Call as Cmd
     struct {} RET; // Return
     struct {struct expr * val; } RETVAL; // Return
+    struct {} NOP; // Nothing
   } d;
 };
 
@@ -116,6 +118,7 @@ struct cmd * TFDecl(char * fname, struct list * params, struct cmd * body); // F
 struct cmd * TFCallC(char * fname, struct list * params); // Function Call as Cmd
 struct cmd * TRet(); // Return
 struct cmd * TRetVal(struct expr * val); // Return with Value
+struct cmd * TNop(); // Nothing
 struct list * TParams(struct expr * head, struct list * tails);
 struct list * TNil();
 
