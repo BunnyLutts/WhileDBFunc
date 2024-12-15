@@ -1,0 +1,23 @@
+var a;
+var b;
+var c;
+func swap(a, b) {
+  var tmp;
+  tmp = a;
+  a = b;
+  b = tmp
+};
+func fibb(a) {
+  if a <= 1 then {
+    return 1
+  } else {
+    return fibb(a-1) + fibb(a-2)
+  }
+};
+a = 12;
+b = -14;
+write_int(a);
+swap(a, b);
+write_int(b);
+c = fibb(a) + fibb(b);
+write_int(c)

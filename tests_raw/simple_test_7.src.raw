@@ -1,0 +1,8 @@
+var p;
+var q;
+p = malloc(8);
+q = malloc(8);
+*p = 1;
+*q = 123;
+write_int(*p);
+write_int(*q)
