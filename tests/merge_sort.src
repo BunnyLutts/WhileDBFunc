@@ -1,5 +1,7 @@
-!INPUT:
-!SRC:
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 func merge(ptr, left, mid, right) 
 {
     var i; 
@@ -101,3 +103,4 @@ while i < n do {
     write_int(*(ptr + i*8));
     i = i + 1;;;;
 };;;;
+__SRC_END__

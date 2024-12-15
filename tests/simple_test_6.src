@@ -1,7 +1,10 @@
-!INPUT:
-!SRC:
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 var a;
 var b;
 a = 1;
 b = 2;
 write_int(a + b)
+__SRC_END__

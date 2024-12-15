@@ -1,5 +1,7 @@
-!INPUT:
-!SRC:
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 var a;
 var b;
 var c;
@@ -23,3 +25,4 @@ swap(a, b);
 write_int(b);
 c = fibb(a) + fibb(b);
 write_int(c)
+__SRC_END__

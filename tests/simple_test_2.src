@@ -1,5 +1,7 @@
-!INPUT:
-!SRC:
+__INPUT_BEGIN__
+
+__INPUT_END__
+__SRC_BEGIN__
 var a;
 var b;
 var c;
@@ -20,3 +22,4 @@ if a then {
   }
 };
 write_int(a*b*c)
+__SRC_END__
